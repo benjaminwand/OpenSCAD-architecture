@@ -9,7 +9,6 @@
     * Schnitt mode anlegen
 * Treppen einzeichnen
 * Aussenwand stärken überprüfen
-* zäunchen Dachterasse
 */
 /*
 öffentlich räume:
@@ -45,18 +44,18 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 1;
-og1 = 1;
+eg = 0;
+og1 = 0;
 og2 = 0;
 og3 = 0;
-og4 = 0;
+og4 = 1;
 dach = 0;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
 openings_implied = 1;
 fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
-metall = 0;             // Zäunchen
+metall = 1;             // Zäunchen
 parking = 0;
 color_index = 0;
 storey_label = 0;
@@ -72,7 +71,7 @@ text = 1;               // Text in Innenräumen
 6 Haus Nord und Nordost             ohne innenräume
 7 komplettes Haus Ansicht außen     ohne innenräume
 */
-mode = 0;
+mode = 7;
 
 
 {// Farben
@@ -905,15 +904,21 @@ module skylights_nord_outside()
 
 module metall() color(color_metal){
     for (i=tree_placement) translate(i) baumzaun();
-    for (y = [15300 : 120 : 37700]) 
-        translate([20, y, h_bodenplatte]) cylinder(railing, 20, 20, $fn=fast_curves?4:30);
-    translate ([0, 15200, h_bodenplatte + railing]) cube([40, 22500, 40], center = false); 
+    gerader_zaun(22500, [0, 15200, h_bodenplatte]);
+    gerader_zaun(20000, [44550, -8100, h_bodenplatte + 3*d_floor + 3*storey_height_high], 40);
+    gerader_zaun(12800, [50150, -5200, h_bodenplatte + 2*d_floor + 3*storey_height_high], 40);
 }
     
 module baumzaun() 
     for (i= [1:6:360]) rotate([0, 0, i]) union(){
     translate ([1000, 0, h_bodenplatte + railing]) cube([40, 120, 40], center = true);   
     translate ([1000, 10]) cylinder(h_bodenplatte + railing, 20, 20, $fn=fast_curves?4:30);
+}
+
+module gerader_zaun(length, placememt, angle = 0) rotate([0, 0, angle]) union() {
+    for (y = [0 : 120 : length]) 
+        translate(placememt + [20, y, 0]) cylinder(railing, 20, 20, $fn=fast_curves?4:30);
+    translate (placememt + [0, 0, railing]) cube([40, length, 40], center = false); 
 }
     
 module parking()translate([0, 2400, 0]){
