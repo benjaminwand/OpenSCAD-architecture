@@ -1,12 +1,11 @@
 /*
 * Tonnengewölbe nord
 * Tonnengewölbe ost
-* mehr Dachfenster über Bädern
-* Fenster höhe überprüfen
 * Schnitt
     * Fundament einzeichnen
     * Schnitt Ort wählen
     * Schnitt mode anlegen
+* Fensterhöhe überprüfen
 * Treppen einzeichnen
 * Aussenwand stärken überprüfen
 */
@@ -44,22 +43,22 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 0;
-og1 = 0;
-og2 = 0;
+eg = 1;
+og1 = 1;
+og2 = 1;
 og3 = 0;
-og4 = 1;
+og4 = 0;
 dach = 0;
-ally = 1;
+ally = 0;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
 openings_implied = 1;
-fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
-metall = 1;             // Zäunchen
+fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
+metall = 0;             // Zäunchen
 parking = 0;
 color_index = 0;
 storey_label = 0;
-text = 1;               // Text in Innenräumen
+text = 0;               // Text in Innenräumen
 
 /*
 0 komplettes Haus                   mit Innenräumen 
@@ -107,12 +106,21 @@ tree_placement = [
 storey_height_ally = 3300;   
 storey_height_high = 3300;   
 roof_thickness = 300;
-placement_skylights_ally = [[1800, 8800, 12100],[5000, 8800, 12100],[8000, 8800, 12100],[11000, 8800, 12100],[14000, 8800, 12100],[17000, 8800, 12100],[20000, 8800, 12100],
+placement_skylights_ally_middle = [[1800, 8800, 12100],[5000, 8800, 12100],[8000, 8800, 12100],[11000, 8800, 12100],[14000, 8800, 12100],[17000, 8800, 12100],[20000, 8800, 12100],
 [23000, 8800, 12100],[26000, 8800, 12100],[29000, 8800, 12100],[32000, 8800, 12100],[35000, 8800, 12100],[38200, 8800, 12100]];
+placement_skylights_ally_north = [[6000, 11200, 12000],[20000, 11200, 12000],[34000, 11200, 12000]];
+placement_skylights_ally_south = [[12200, 6400, 12000],[27800, 6400, 12000]];
 
-placement_skylights_ost = [[40400, 8200, 18500],[40400, 12200, 18500],[40400,16200, 18500],[40500, 20200, 18500],[40400, 24500, 18500]];
+placement_skylights_ost_flur = [[40400, 8200, 18500],[40400, 12200, 18500],[40400,16200, 18500],[40500, 20200, 18500],[40400, 24500, 18500]];
+placement_skylights_ost_mitte = [[43300, 4500, 19050],[43300, 24600, 19050]];
 
-placement_skylights_nord = [[3500, 43500, 19100],[7000, 43500, 19100],[10500, 43500, 19100],[14000, 43500, 19100],[17500, 43500, 19100],[21000, 43500, 19100],[24500, 43500, 19100],[28000, 43500, 19100],[31500, 43500, 19100]];}
+placement_skylights_nord_flur = [[3500, 43500, 19100],[7000, 43500, 19100],[10500, 43500, 19100],[14000, 43500, 19100],[17500, 43500, 19100],[21000, 43500, 19100],[24500, 43500, 19100],[28000, 43500, 19100],[31500, 43500, 19100]];
+placement_skylights_nord_bad1= [[3500, 47500, 18600]];
+placement_skylights_nord_bad2= [[3500, 39300, 18600]];
+placement_skylights_nord_dachboden1= [[17500, 40800, 18900],[21000, 40800, 18900],[24500, 40800, 18900],[28000, 40800, 18900],[31500, 40800, 18900]];
+
+placement_skylights_nord_dachboden2 = [[21000, 46300, 18850],[24500, 46300, 18850],[28000, 46300, 18850],[31500, 46300, 18850]];
+}
 
 // flow control
 if (mode==0)                // komplettes Haus
@@ -826,6 +834,8 @@ module eg_aussen() color(color_walls) {
     translate ([39500, 2000, 0]) cube([7500, 26300, og2?h_bodenplatte - d_bodenplatte - e:1000]);
     if (eg || og1 || og2 || og3 || og4)
         translate ([14700, 43100, 0]) cube([4800, 6000, og2?h_bodenplatte - d_bodenplatte - e:1000]);
+    if (eg) for (x=[stangen_x*2:stangen_x*3], y=stangen_y_neu[3])
+        hull() {translate([x, y]) bodensaeule();}
     if (eg || og1 || og2) 
         translate ([17600, 2000, 0]) cube([4800, 6000, og2?h_bodenplatte - d_bodenplatte - e:1000]);
 }
@@ -893,14 +903,26 @@ module inner_ally_vault(h){
 };
 
 module skylight_ally() resize([1200, 1200, 500]) sphere(1, $fn=fast_curves?10:30);
-module skylights_ally_outside() for(i=placement_skylights_ally) translate(i) skylight_ally();
+module skylights_ally_outside() {
+    for(i=placement_skylights_ally_middle) translate(i) skylight_ally();
+    for(i=placement_skylights_ally_north) translate(i) rotate([-5, 0, 0]) skylight_ally();
+    for(i=placement_skylights_ally_south) translate(i) rotate([5, 0, 0]) skylight_ally();
+};
     
-module skylight_ost() rotate([0, -25, 0]) resize([900, 900, 500]) sphere(1, $fn=fast_curves?10:30);   
-module skylights_ost_outside() for(i=placement_skylights_ost) translate(i) skylight_ost();
+module skylight_ost()  resize([900, 900, 500]) sphere(1, $fn=fast_curves?10:30);   
+module skylights_ost_outside() {
+    for(i=placement_skylights_ost_flur) translate(i) rotate([0, -25, 0]) skylight_ost();
+    for(i=placement_skylights_ost_mitte) translate(i) skylight_ost();
+    };
 
 module skylight_nord() resize([900, 900, 500]) sphere(1, $fn=fast_curves?10:30);   
-module skylights_nord_outside() 
-    for(i=placement_skylights_nord) translate(i) skylight_nord();
+module skylights_nord_outside() {
+    for(i=placement_skylights_nord_flur) translate(i) skylight_nord();
+    for(i=placement_skylights_nord_bad1) translate(i) rotate([-15, 0, 0]) skylight_nord();
+    for(i=placement_skylights_nord_bad2) translate(i) rotate([15, 0, 0]) skylight_nord();
+    for(i=placement_skylights_nord_dachboden1) translate(i) rotate([10, 0, 0])skylight_nord();
+    for(i=placement_skylights_nord_dachboden2) translate(i) rotate([-10, 0, 0])skylight_nord();
+}
 
 module metall() color(color_metal){
     for (i=tree_placement) translate(i) baumzaun();
