@@ -23,7 +23,7 @@ h = 3000;       // Raumhöhe
 tb = 1000;      // Türbreite
 fb = 500;       // Fensterbreite
 
-wstrk = stellen?150:1.65*scale;    // Wandstärke
+wstrk = stellen ? 3/scale : 1.65/scale;    // Wandstärke
 wx = 45;         // Winkel
 wy = 35;
 
@@ -39,7 +39,7 @@ for(i=[-81:5*sqrt(2):110]) rotate([wx, 0, 0]) rotate([0, wy, 0])
 
 module stripes_old()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[-81:15.9:110]) rotate([45, 45, 0]) 
-    translate([-150, -150, i]) cube([300, 300, 2]);
+    translate([-150, -150, i]) cube([300, 300, 1.65/scale]);
 
 module ghost(){
     translate([-b/2, -l/2]) cube ([b, l, h]);
