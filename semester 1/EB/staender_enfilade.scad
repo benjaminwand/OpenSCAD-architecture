@@ -1,16 +1,17 @@
 // Todo
 /*
 * Stangen an Ränder
-* Proportionen korrigieren
-
+* Proportionen und Winkel korrigieren
+* passt das enfilade überhaupt auf den 3d drucker?
 */
 
 
 // Darstellungsoptionen
 stellen = 0;            // Platten. else: Stangen
-staenderwerk = 1;       // ständer 3d version
+staenderwerk = 1;       // ständer 3d version. else: diff mit Box
 ghost = 0;
 A4 = 0;
+
 
 // Maße
 scale = 1/50;
@@ -22,7 +23,7 @@ h = 3000;       // Raumhöhe
 tb = 1000;      // Türbreite
 fb = 500;       // Fensterbreite
 
-wstrk = stellen?150:15;    // Wandstärke
+wstrk = stellen?150:1.65*scale;    // Wandstärke
 wx = 45;         // Winkel
 wy = 35;
 
@@ -102,10 +103,18 @@ module stellen() {
 if (stellen) 
     scale(scale) children([0:$children-1]);
     
-else 
+else if (staenderwerk)
     intersection(){
         stripes();
         scale(scale) children([0 : $children-1]);
     }
-        
+    
+else
+    difference() {
+        translate([0, 0, 30]) cube([60, 190, 65], true);
+        intersection(){
+            stripes();
+            scale(scale) children([0 : $children-1]);
+        }
+    }   
 };
