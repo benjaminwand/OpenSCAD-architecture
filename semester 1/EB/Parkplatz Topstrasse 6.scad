@@ -1,4 +1,7 @@
 /*
+* größen von dachlichtern parametisch machen
+* schatten von dachlichtern über obergeschosse
+* teeküche in coworking bereich einzeichnen
 * Tonnengewölbe nord
 * Tonnengewölbe ost
 * Schnitt
@@ -8,6 +11,7 @@
 * Fensterhöhe überprüfen
 * Treppen einzeichnen
 * Aussenwand stärken überprüfen
+* Rohbau anlegen
 */
 /*
 öffentlich räume:
@@ -45,15 +49,15 @@ doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
 eg = 1;
 og1 = 1;
-og2 = 1;
+og2 = 0;
 og3 = 0;
 og4 = 0;
 dach = 0;
-ally = 0;
+ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
 openings_implied = 1;
-fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
+fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
 metall = 0;             // Zäunchen
 parking = 0;
 color_index = 0;
@@ -70,7 +74,7 @@ text = 0;               // Text in Innenräumen
 6 Haus Nord und Nordost             ohne innenräume
 7 komplettes Haus Ansicht außen     ohne innenräume
 */
-mode = 7;
+mode = 0;
 
 
 {// Farben
@@ -260,7 +264,7 @@ module grundstueck() scale([1000, 1000, 1])
     translate([-113.3608, 44.89835]) rotate([0, 0, rot])
     import("grundr2.stl"); // Grundriss 1:1000
 module bodensaeule() 
-    color(color_pillars) cube([dicke_saeule, dicke_saeule, og2?h_bodenplatte - e:1000]);
+    color(color_pillars) cube([dicke_saeule, dicke_saeule, og1?h_bodenplatte - e:1000]);
 module bad_barrierefrei() 
     cube([2800, 2500, storey_height_ally]);
 module tuer_barrierefrei() 
