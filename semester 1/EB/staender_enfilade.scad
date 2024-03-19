@@ -26,6 +26,7 @@ fb = 500;       // Fensterbreite
 wstrk = stellen ? 3/scale : 1.65/scale;    // Wandstärke
 wx = 45;         // Winkel
 wy = 35;
+wx_2 = 55;
 
 
 // Skizzen
@@ -33,11 +34,15 @@ if (ghost) %scale(scale) ghost();              // innenraum
 if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
-module stripes()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
+module stripes_2()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
+for(i=[-81:5*sqrt(2):110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
+    translate([-150, -150, i]) cube([300, 300, 0.5]);
+
+module stripes_1()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[-81:5*sqrt(2):110]) rotate([wx, 0, 0]) rotate([0, wy, 0])  
     translate([-150, -150, i]) cube([300, 300, 0.5]);
 
-module stripes_old()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
+module stripes_0()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[-81:15.9:110]) rotate([45, 45, 0]) 
     translate([-150, -150, i]) cube([300, 300, 1.65/scale]);
 
@@ -94,7 +99,7 @@ stellen()
         let(xyz = [b, l/2-fb/2, wstrk]){
         echo(str("decke vorne + hinten: 2x ", str(xyz*scale)));
         translate([-b/2, -1.5*l - wstrk, h]) cube (xyz);
-        translate([-b/2, l-wstrk+fb/2, h]) cube (xyz);
+        translate([-b/2, l+wstrk+fb/2, h]) cube (xyz);
         };
     };
 }
@@ -105,7 +110,7 @@ if (stellen)
     
 else if (staenderwerk)
     intersection(){
-        stripes();
+        stripes_2();
         scale(scale) children([0 : $children-1]);
     }
     
@@ -118,3 +123,5 @@ else
         }
     }   
 };
+
+//rotate([45, 0, 0])cube(50);
