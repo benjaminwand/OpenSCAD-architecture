@@ -1,6 +1,5 @@
 // Todo
 /*
-* fensetr un d türen in geist
 * alle punkte festlegen
 * streifn zwischen punkte
 * außenwände um alles abzuziehen
@@ -10,7 +9,7 @@
 // Darstellungsoptionen
 stellen = 0;            // Platten. else: Stangen
 staenderwerk = 1;       // ständer 3d version. else: diff mit Box
-ghost = 1;
+ghost = 0;
 A4 = 0;
 aussenstreifen = 1;
 
@@ -25,7 +24,7 @@ h = 3000;       // Raumhöhe
 tb = 1000;      // Türbreite
 fb = 500;       // Fensterbreite
 
-wstrk = 0;//stellen ? 3/scale : 1.65/scale;    // Wandstärke
+wstrk = 1.65 / scale;//stellen ? 3/scale : 1.65/scale;    // Wandstärke
 wstrk2 = 1.65 / scale;
 wx = 45;         // Winkel
 wy = 35;
@@ -65,28 +64,25 @@ module ghost(){
 stellen()
 {
     // wände längs 
-    let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk]){
-    echo(str("wände längs: 2x ", str(xyz*scale)));
-    translate([b/2, xyz[1]/-2, 0]) cube (xyz);
+    let(xyz = [wstrk, 3*l, h]){
+    translate([b/2-wstrk2/2, xyz[1]/-2, 0]) cube (xyz);
     };
-    let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk]){
-    translate([-wstrk-b/2, xyz[1]/-2, 0]) cube (xyz);
+    let(xyz = [wstrk, 3*l, h]){
+    translate([-wstrk2/2-b/2, xyz[1]/-2, 0]) cube (xyz);
     };
 
     // wände quer hoch
-    let(xyz = [b/2-tb/2, wstrk, h+wstrk]){
-    translate([-b/2, l*1.5+wstrk, 0]) cube (xyz);
-    translate([b/2 - xyz[0], l*1.5+wstrk, 0]) cube (xyz);
+    let(xyz = [b/2-tb/2, wstrk, h]){
+    translate([-b/2, l*1.5-wstrk2/2, 0]) cube (xyz);
+    translate([b/2 - xyz[0], l*1.5-wstrk2/2, 0]) cube (xyz);
     };
-    let(xyz = [b/2-tb/2, wstrk, h+wstrk]){
-    echo(str("wände quer hoch: 4x ", str(xyz*scale)));
-    translate([-b/2, -l*1.5-2*wstrk, 0]) cube (xyz);
-    translate([b/2 - xyz[0], -l*1.5-2*wstrk, 0]) cube (xyz);
+    let(xyz = [b/2-tb/2, wstrk, h]){
+    translate([-b/2, -l*1.5-0.5*wstrk2, 0]) cube (xyz);
+    translate([b/2 - xyz[0], -l*1.5-0.5*wstrk2, 0]) cube (xyz);
     };
 
     // wände quer flach
     let(xyz = [b/2-tb/2, wstrk, h]){
-    echo(str("wände quer flach: 4x ", str(xyz*scale)));
     translate([-b/2, -l*0.5-wstrk, 0]) cube (xyz);
     translate([b/2 - xyz[0], -l*0.5-wstrk, 0]) cube (xyz);
     };
@@ -97,16 +93,14 @@ stellen()
     union(){
         // decke innen
         let(xyz = [b, l -fb + wstrk, wstrk]){
-        echo(str("decke innen: 2x ", str(xyz*scale)));
-        translate([-b/2, fb/2, h]) cube (xyz);
-        translate([-b/2, -xyz[1]-fb/2, h]) cube (xyz);
+        translate([-b/2, fb/2, h-0.5*wstrk2]) cube (xyz);
+        translate([-b/2, -xyz[1]-fb/2, h-0.5*wstrk2]) cube (xyz);
         };
     
         // decke vorne + hinten
-        let(xyz = [b, l/2-fb/2, wstrk]){
-        echo(str("decke vorne + hinten: 2x ", str(xyz*scale)));
-        translate([-b/2, -1.5*l - wstrk, h]) cube (xyz);
-        translate([-b/2, l+wstrk+fb/2, h]) cube (xyz);
+        let(xyz = [b, l/2-fb/2-0.5*wstrk2, wstrk]){
+        translate([-b/2, -1.5*l, h-0.5*wstrk2]) cube (xyz);
+        translate([-b/2, l+wstrk+fb/2, h-0.5*wstrk2]) cube (xyz);
         };
     };
 }
@@ -140,7 +134,7 @@ else
             scale(scale) children([0 : $children-1]);
         }
     }   
-#if (aussenstreifen) scale(scale) aussenstreifen();
+if (aussenstreifen) scale(scale) aussenstreifen();
 };
 
 //rotate([45, 0, 0])cube(50);
