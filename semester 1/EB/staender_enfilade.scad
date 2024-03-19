@@ -37,8 +37,8 @@ if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
 module stripes_2()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[-81:5*sqrt(2):110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
-    translate([-150, -150, i]) cube([300, 300, 0.5]);
+for(i=[-81.4:5*sqrt(2):110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
+    translate([-150, -150, i]) cube([300, 300, wstrk2*scale]);
 
 module stripes_1()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[-81:5*sqrt(2):110]) rotate([wx, 0, 0]) rotate([0, wy, 0])  
@@ -83,12 +83,12 @@ stellen()
 
     // wände quer flach
     let(xyz = [b/2-tb/2, wstrk, h]){
-    translate([-b/2, -l*0.5-wstrk, 0]) cube (xyz);
-    translate([b/2 - xyz[0], -l*0.5-wstrk, 0]) cube (xyz);
+    translate([-b/2, -l*0.5-wstrk2*0.5, 0]) cube (xyz);
+    translate([b/2 - xyz[0], -l*0.5-wstrk2*0.5, 0]) cube (xyz);
     };
     let(xyz = [b/2-tb/2, wstrk, h]){
-    translate([-b/2, l*0.5, 0]) cube (xyz);
-    translate([b/2 - xyz[0], l*0.5, 0]) cube (xyz);
+    translate([-b/2, l*0.5-wstrk2*0.5, 0]) cube (xyz);
+    translate([b/2 - xyz[0], l*0.5-wstrk2*0.5, 0]) cube (xyz);
     };
     union(){
         // decke innen
@@ -107,11 +107,13 @@ stellen()
 
 module aussenstreifen (){
     for (x=[b/2, -b/2], z = [0, h])
-    translate([x, 0, z]) cube([wstrk2, 3*l, wstrk2], center=true);
+        translate([x, 0, z]) cube([wstrk2, 3*l, wstrk2], center=true);
     for (x=[b/2, -b/2], y = [l*1.5, -l*1.5])
-    translate([x, y, h/2]) cube([wstrk2, wstrk2, h], center=true);
-    for (y = [l*1.5, -l*1.5], z = [0, h])
-    translate([0, y, z]) cube([b, wstrk2, wstrk2], center=true);
+        translate([x, y, h/2]) cube([wstrk2, wstrk2, h], center=true);
+    for (y = [l*1.5, -l*1.5])
+        translate([0, y, h]) cube([b, wstrk2, wstrk2], center=true);
+    for (x=[b/4+tb/4, -b/4-tb/4], y = [l*1.5, l*0.5, -l*0.5, -l*1.5])
+        translate([x, y, 0]) cube([b/2-tb/2, wstrk2, wstrk2], center=true);
 };
 
 
@@ -137,4 +139,4 @@ else
 if (aussenstreifen) scale(scale) aussenstreifen();
 };
 
-//rotate([45, 0, 0])cube(50);
+//rotate([0, 0, 45])cube(50);
