@@ -11,6 +11,7 @@ stellen = 0;            // Platten. else: Stangen
 staenderwerk = 1;       // ständer 3d version. else: diff mit Box
 ghost = 0;
 A4 = 0;
+aussenstreifen = 1;
 
 
 // Maße
@@ -104,6 +105,22 @@ stellen()
     };
 }
 
+module aussenstreifen (){
+    for (x=[b/2, -b/2], z = [0, h])
+    translate([x, 0, z]) cube([wstrk, 3*l, wstrk], center=true);
+    
+    for (x=[b/2, -b/2], y = [l*1.5, -l*1.5])
+    translate([x, y, h/2]) cube([wstrk, wstrk, h], center=true);
+    
+
+    for (y = [l*1.5, -l*1.5], z = [0, h])
+    translate([0, y, z]) cube([b, wstrk, wstrk], center=true);
+
+}
+;
+
+
+
 module stellen() {
 if (stellen) 
     scale(scale) children([0:$children-1]);
@@ -122,6 +139,7 @@ else
             scale(scale) children([0 : $children-1]);
         }
     }   
+if (aussenstreifen) scale(scale) aussenstreifen();
 };
 
 //rotate([45, 0, 0])cube(50);
