@@ -1,15 +1,16 @@
 // Todo
 /*
-* Stangen an Ränder
-* Proportionen und Winkel korrigieren
-* passt das enfilade überhaupt auf den 3d drucker?
+* fensetr un d türen in geist
+* alle punkte festlegen
+* streifn zwischen punkte
+* außenwände um alles abzuziehen
 */
 
 
 // Darstellungsoptionen
 stellen = 0;            // Platten. else: Stangen
 staenderwerk = 1;       // ständer 3d version. else: diff mit Box
-ghost = 0;
+ghost = 1;
 A4 = 0;
 aussenstreifen = 1;
 
@@ -24,7 +25,8 @@ h = 3000;       // Raumhöhe
 tb = 1000;      // Türbreite
 fb = 500;       // Fensterbreite
 
-wstrk = stellen ? 3/scale : 1.65/scale;    // Wandstärke
+wstrk = 0;//stellen ? 3/scale : 1.65/scale;    // Wandstärke
+wstrk2 = 1.65 / scale;
 wx = 45;         // Winkel
 wy = 35;
 wx_2 = 55;
@@ -51,9 +53,13 @@ module ghost(){
     translate([-b/2, -l/2]) cube ([b, l, h]);
     translate([-b/2, wstrk +l/2]) cube ([b, l, h]);
     translate([-b/2, -wstrk -1.5*l]) cube ([b, l, h]);
-    translate([-b/2, -fb/2, h]) cube ([b, fb, wstrk]);
-    translate([-b/2, l+wstrk-fb/2, h]) cube ([b, fb, wstrk]);
-    translate([-b/2, -l-wstrk-fb/2, h]) cube ([b, fb, wstrk]);
+    translate([-b/2, -fb/2, h]) cube ([b, fb, wstrk2]);
+    translate([-b/2, l+wstrk-fb/2, h]) cube ([b, fb, wstrk2]);
+    translate([-b/2, -l-wstrk-fb/2, h]) cube ([b, fb, wstrk2]);
+    translate([-tb/2, 1.5*l-wstrk2/2, 0]) cube ([tb, wstrk2, h]);
+    translate([-tb/2, -1.5*l-wstrk2/2, 0]) cube ([tb, wstrk2, h]);
+    translate([-tb/2, 0.5*l-wstrk2/2, 0]) cube ([tb, wstrk2, h]);
+    translate([-tb/2, -0.5*l-wstrk2/2, 0]) cube ([tb, wstrk2, h]);
 }
 
 stellen()
@@ -107,17 +113,12 @@ stellen()
 
 module aussenstreifen (){
     for (x=[b/2, -b/2], z = [0, h])
-    translate([x, 0, z]) cube([wstrk, 3*l, wstrk], center=true);
-    
+    translate([x, 0, z]) cube([wstrk2, 3*l, wstrk2], center=true);
     for (x=[b/2, -b/2], y = [l*1.5, -l*1.5])
-    translate([x, y, h/2]) cube([wstrk, wstrk, h], center=true);
-    
-
+    translate([x, y, h/2]) cube([wstrk2, wstrk2, h], center=true);
     for (y = [l*1.5, -l*1.5], z = [0, h])
-    translate([0, y, z]) cube([b, wstrk, wstrk], center=true);
-
-}
-;
+    translate([0, y, z]) cube([b, wstrk2, wstrk2], center=true);
+};
 
 
 
@@ -139,7 +140,7 @@ else
             scale(scale) children([0 : $children-1]);
         }
     }   
-if (aussenstreifen) scale(scale) aussenstreifen();
+#if (aussenstreifen) scale(scale) aussenstreifen();
 };
 
 //rotate([45, 0, 0])cube(50);
