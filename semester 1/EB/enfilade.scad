@@ -1,5 +1,5 @@
 // Darstellungsoptionen
-stellen = 0;            // Platten. else: Stangen
+stellen = 1;            // Platten. else: Stangen
 staenderwerk = 0;       // ständer 3d version. else: flach projiziert
 decken_und_waende = 0;  // else: Grundriss und Innenwände
 
@@ -84,7 +84,7 @@ stellen()
         let(xyz = [b, l/2-fb/2, wstrk]){
         echo(str("decke vorne + hinten: 2x ", str(xyz*scale)));
         translate([-b/2, -1.5*l - wstrk, h]) cube (xyz);
-        translate([-b/2, l-wstrk+fb/2, h]) cube (xyz);
+  #      translate([-b/2, l+wstrk+fb/2, h]) cube (xyz);
         };
     };
 }
