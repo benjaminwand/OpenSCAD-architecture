@@ -18,8 +18,8 @@ aussenstreifen = 1;
 scale = 1/50;
 
 l = 3000;       // Raumlänge
-b = 2500;       // Raumbreite
-h = 3000;       // Raumhöhe
+b = 2300;       // Raumbreite
+h = 2750;       // Raumhöhe
 
 tb = 1000;      // Türbreite
 fb = 500;       // Fensterbreite
@@ -37,7 +37,7 @@ if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
 module stripes_2()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[-80.5:6.95:110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
+for(i=[-84.5:/*6.95*/8.68:110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
     translate([0, 0, i]) cube([200, 200, wstrk2*scale], true);
 
 module stripes_1()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
