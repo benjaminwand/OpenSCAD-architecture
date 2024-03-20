@@ -37,8 +37,8 @@ if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
 module stripes_2()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[-81.4:5*sqrt(2):110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
-    translate([-150, -150, i]) cube([300, 300, wstrk2*scale]);
+for(i=[-80.5:6.95:110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
+    translate([0, 0, i]) cube([200, 200, wstrk2*scale], true);
 
 module stripes_1()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[-81:5*sqrt(2):110]) rotate([wx, 0, 0]) rotate([0, wy, 0])  
