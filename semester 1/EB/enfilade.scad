@@ -19,7 +19,7 @@ wy = 35;
 
 
 // Skizzen
-%scale(scale) ghost();              // innenraum
+#scale(scale) ghost();              // innenraum
 %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
@@ -84,7 +84,7 @@ stellen()
         let(xyz = [b, l/2-fb/2, wstrk]){
         echo(str("decke vorne + hinten: 2x ", str(xyz*scale)));
         translate([-b/2, -1.5*l - wstrk, h]) cube (xyz);
-  #      translate([-b/2, l+wstrk+fb/2, h]) cube (xyz);
+        translate([-b/2, l+wstrk+fb/2, h]) cube (xyz);
         };
     };
 }
