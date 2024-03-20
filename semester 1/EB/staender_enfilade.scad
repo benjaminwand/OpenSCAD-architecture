@@ -1,7 +1,6 @@
 // Todo
 /*
 * alle punkte festlegen
-* streifn zwischen punkte
 * außenwände um alles abzuziehen
 */
 
@@ -19,10 +18,10 @@ scale = 1/50;
 
 l = 3000;       // Raumlänge
 b = 2300;       // Raumbreite
-h = 2750;       // Raumhöhe
+h = 2900;       // Raumhöhe
 
 tb = 1000;      // Türbreite
-fb = 500;       // Fensterbreite
+fb = 600;       // Fensterbreite
 
 wstrk = 1.65 / scale;//stellen ? 3/scale : 1.65/scale;    // Wandstärke
 wstrk2 = 1.65 / scale;
@@ -31,13 +30,35 @@ wy = 35;
 wx_2 = 55;
 
 
+d1 = 6.95;
+d2 = 8.68;
+d3 = 11.6;
+d = d3;
+
+p1 = -81;
+p2 = -84.5;
+p3 = -83;
+p = p3;
+
+points = [
+// Punkte an den langen horizontalen
+for (y=[-l*1.215:d*1.73/scale:l*1.4]) [b/2, y, 0]*scale,
+for (y=[-l*1.33:d*1.73/scale:l*1.5]) [-b/2, y, 0]*scale,
+for (y=[-l:d*1.73/scale:l]) [b/2, y, h]*scale,
+for (y=[-l:d*1.73/scale:l]) [-b/2, y, h]*scale
+
+
+];
+//for (i=points) translate(i) cube(5, true);
+
+
 // Skizzen
 if (ghost) %scale(scale) ghost();              // innenraum
 if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
 module stripes_2()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[-84.5:/*6.95*/8.68:110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
+for(i=[p:d:110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
     translate([0, 0, i]) cube([200, 200, wstrk2*scale], true);
 
 module stripes_1()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
