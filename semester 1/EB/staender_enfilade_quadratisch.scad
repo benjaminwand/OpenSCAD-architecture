@@ -23,14 +23,11 @@ tb = 833;           // Türbreite
 fb = 833;           // Fensterbreite
 
 wstrk = 1.65 / scale;    // Wandstärke
-wx_2 = 55;          // Winkel
+wx = 55;            // Winkel
+d = 9.65;           // Streifen Abstand
+p = -86.8;          // Streifen Position
 
-d4 = 9.65;
-d = d4;
-
-p4 = -86.8;
-p = p4;
-
+// Lötpunkte
 points = [
 // Punkte an den langen horizontalen
 for (x=[-b/2, b/2], y=[-l*1.5:l/3:l*1.5], z = [0, h]) [x, y, z]*scale,
@@ -43,7 +40,8 @@ for (x=[-tb/2, tb/2], y=[-l*1.5, l*1.5], z = h) [x, y, z]*scale,
 for (x=tb/2, y=[-l*0.5, l*0.5], z = h) [x, y, z]*scale,
 // Punkte an den Seiten für die Innenwände
 for (x=[-b/2, b/2], y=[-l*0.5, l*0.5], z = [h/3, 2*h/3]) [x, y, z]*scale,
-];
+]; 
+
 for (i=points) translate(i) cube(8, true);
 
 
@@ -52,17 +50,9 @@ if (ghost) %scale(scale) ghost();              // innenraum
 if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
 
-module stripes_2()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[p:d:110]) rotate([0, 0, 45]) rotate([wx_2, 0, 0])  
+module stripes()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
+for(i=[p:d:110]) rotate([0, 0, 45]) rotate([wx, 0, 0])  
     translate([0, 0, i]) cube([200, 200, wstrk*scale], true);
-
-/*module stripes_1()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[-81:5*sqrt(2):110]) rotate([wx, 0, 0]) rotate([0, wy, 0])  
-    translate([-150, -150, i]) cube([300, 300, 0.5]);
-
-module stripes_0()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
-for(i=[-81:15.9:110]) rotate([45, 45, 0]) 
-    translate([-150, -150, i]) cube([300, 300, 1.65/scale]);*/
 
 module ghost(){
     translate([-b/2, -l/2]) cube ([b, l, h]);
@@ -140,7 +130,7 @@ if (stellen)
     
 else if (staenderwerk)
     intersection(){
-        stripes_2();
+        stripes();
         scale(scale) children([0 : $children-1]);
     }
     
