@@ -1,6 +1,5 @@
 // Todo
 /*
-* alle punkte festlegen
 * außenwände um alles abzuziehen
 */
 
@@ -20,8 +19,8 @@ l = 2500;       // Raumlänge
 b = 2500;       // Raumbreite
 h = 2500;       // Raumhöhe
 
-tb = 800;      // Türbreite
-fb = 800;       // Fensterbreite
+tb = 833;      // Türbreite
+fb = 833;       // Fensterbreite
 
 wstrk = 1.65 / scale;//stellen ? 3/scale : 1.65/scale;    // Wandstärke
 wstrk2 = 1.65 / scale;
@@ -55,7 +54,7 @@ for (x=tb/2, y=[-l*0.5, l*0.5], z = h) [x, y, z]*scale,
 // Punkte an den Seiten für die Innenwände
 for (x=[-b/2, b/2], y=[-l*0.5, l*0.5], z = [h/3, 2*h/3]) [x, y, z]*scale,
 ];
-for (i=points) translate(i) cube(5, true);
+for (i=points) translate(i) cube(8, true);
 
 
 // Skizzen
@@ -165,5 +164,3 @@ else
     }   
 if (aussenstreifen) scale(scale) aussenstreifen();
 };
-
-//rotate([0, 0, 45])cube(60);
