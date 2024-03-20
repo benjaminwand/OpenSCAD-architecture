@@ -6,7 +6,7 @@
 
 // Darstellungsoptionen
 stellen = 0;            // Platten. else: Stangen
-staenderwerk = 1;       // ständer 3d version. else: diff mit Box
+staenderwerk = 0;       // ständer 3d version. else: diff mit Box
 ghost = 0;
 A4 = 0;
 aussenstreifen = 1;
@@ -26,6 +26,7 @@ wstrk = 1.65 / scale;    // Wandstärke
 wx = 55;            // Winkel
 d = 9.65;           // Streifen Abstand
 p = -86.8;          // Streifen Position
+minw = 1.2/scale;
 
 // Lötpunkte
 points = [
@@ -42,7 +43,7 @@ for (x=tb/2, y=[-l*0.5, l*0.5], z = h) [x, y, z]*scale,
 for (x=[-b/2, b/2], y=[-l*0.5, l*0.5], z = [h/3, 2*h/3]) [x, y, z]*scale,
 ]; 
 
-for (i=points) translate(i) cube(8, true);
+module loetpunkte() for (i=points) translate(i) cube(8, true);
 
 
 // Skizzen
@@ -122,25 +123,37 @@ module aussenstreifen (){
         translate([x, y, 0]) cube([b/2-tb/2, wstrk, wstrk], center=true);
 };
 
+module aussenbox()
+{
+    for (x=[b/2, -b/2]) translate([x, 0, h/2]) 
+        cube([wstrk + 2*minw, 3*l + 2*minw + wstrk, h + 2*minw + wstrk], center=true);
+    for (y = [-l*1.5:l: l*1.5])
+        translate([0, y, h/2]) cube([b, wstrk + 2*minw, h+ wstrk + 2*minw], center=true);
+    translate([0, 0, h]) cube([b + 2*minw+wstrk, 3*l + 2*minw+wstrk, wstrk + 2*minw], center=true);
+};
 
 
 module stellen() {
 if (stellen) 
     scale(scale) children([0:$children-1]);
     
-else if (staenderwerk)
+else if (staenderwerk){
     intersection(){
         stripes();
         scale(scale) children([0 : $children-1]);
+    };
+    loetpunkte();
+    if (aussenstreifen) scale(scale) aussenstreifen();
     }
     
 else
-    difference() {
-        translate([0, 0, 30]) cube([60, 190, 65], true);
+    rotate([180, 0, 90]) difference() {
+        scale(scale) aussenbox();
         intersection(){
             stripes();
             scale(scale) children([0 : $children-1]);
         }
+        loetpunkte();
+        if (aussenstreifen) scale(scale) aussenstreifen();
     }   
-if (aussenstreifen) scale(scale) aussenstreifen();
 };
