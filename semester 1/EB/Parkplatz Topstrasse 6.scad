@@ -1,7 +1,4 @@
 /*
-* größen von dachlichtern parametisch machen
-* schatten von dachlichtern über obergeschosse
-* teeküche in coworking bereich einzeichnen
 * Tonnengewölbe nord
 * Tonnengewölbe ost
 * Schnitt
@@ -47,7 +44,7 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 1;
+eg = 0;
 og1 = 1;
 og2 = 0;
 og3 = 0;
@@ -62,7 +59,8 @@ metall = 0;             // Zäunchen
 parking = 0;
 color_index = 0;
 storey_label = 0;
-text = 0;               // Text in Innenräumen
+text = 1;               // Text in Innenräumen
+line_width = 100;       // for drawing skylights on floor plans
 
 /*
 0 komplettes Haus                   mit Innenräumen 
@@ -90,7 +88,8 @@ color_full_public = "pink";
 color_entrance_doors = "cyan";
 color_metal = "goldenrod";
 color_text = "black";
-color_parking = "lightgrey";}
+color_parking = "lightgrey";
+color_skylight_floorplan = "lightgrey";}
 
 {// Maße
 h_bodenplatte = 5000;
@@ -110,6 +109,8 @@ tree_placement = [
 storey_height_ally = 3300;   
 storey_height_high = 3300;   
 roof_thickness = 300;
+
+// Sky lights
 placement_skylights_ally_middle = [[1800, 8800, 12100],[5000, 8800, 12100],[8000, 8800, 12100],[11000, 8800, 12100],[14000, 8800, 12100],[17000, 8800, 12100],[20000, 8800, 12100],
 [23000, 8800, 12100],[26000, 8800, 12100],[29000, 8800, 12100],[32000, 8800, 12100],[35000, 8800, 12100],[38200, 8800, 12100]];
 placement_skylights_ally_north = [[6000, 11200, 12000],[20000, 11200, 12000],[34000, 11200, 12000]];
@@ -124,6 +125,10 @@ placement_skylights_nord_bad2= [[3500, 39300, 18600]];
 placement_skylights_nord_dachboden1= [[17500, 40800, 18900],[21000, 40800, 18900],[24500, 40800, 18900],[28000, 40800, 18900],[31500, 40800, 18900]];
 
 placement_skylights_nord_dachboden2 = [[21000, 46300, 18850],[24500, 46300, 18850],[28000, 46300, 18850],[31500, 46300, 18850]];
+
+diameter_skylight_south = 1200;
+diameter_skylight_east = 900;
+diameter_skylight_north = 900;
 }
 
 // flow control
@@ -227,6 +232,12 @@ scale(scale)
          
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
     }
+    if (og2 && !og3 && mode==0) 
+        skylight_in_floor_plan(diameter_skylight_south, concat(placement_skylights_ally_middle, placement_skylights_ally_north, placement_skylights_ally_south));
+    if (og4 && !dach && mode==0) {
+        skylight_in_floor_plan(diameter_skylight_east, concat(placement_skylights_ost_flur, placement_skylights_ost_mitte));
+        skylight_in_floor_plan(diameter_skylight_north, concat(placement_skylights_nord_flur, placement_skylights_nord_bad1, placement_skylights_nord_bad2, placement_skylights_nord_dachboden1, placement_skylights_nord_dachboden2));
+        }
     if (text) raeume_innen($doors = 0, $rooms=0, $staircase=0, $windows=0, $text=1, $elevator=0);
     if (metall) metall();  
     if (parking && eg) parking();
@@ -484,7 +495,8 @@ module raeume_innen() {
 
             if ($text) translate([0, 0, h_bodenplatte]) {
                room_text("Spiele/Spielen", size = 700, placement=[18200, 38100, 0]);
-               room_text("Coworking", size = 700, placement=[25900, 38100, 0]);
+               room_text("Coworking", size = 700, placement=[29900, 34800, 0]);
+               room_text("Teeküche", size = 700, placement=[28500, 41000, 0]);
                 
                room_text("Gast", size = 700, placement=[19300, 45200, 0]);
                room_text("Gast", size = 700, placement=[22300, 44500, 0]);
@@ -906,20 +918,23 @@ module inner_ally_vault(h){
             rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:30);
 };
 
-module skylight_ally() resize([1200, 1200, 500]) sphere(1, $fn=fast_curves?10:30);
+module skylight_ally() resize([diameter_skylight_south, diameter_skylight_south, 500])  
+    sphere(1, $fn=fast_curves?10:30);
 module skylights_ally_outside() {
     for(i=placement_skylights_ally_middle) translate(i) skylight_ally();
     for(i=placement_skylights_ally_north) translate(i) rotate([-5, 0, 0]) skylight_ally();
     for(i=placement_skylights_ally_south) translate(i) rotate([5, 0, 0]) skylight_ally();
 };
     
-module skylight_ost()  resize([900, 900, 500]) sphere(1, $fn=fast_curves?10:30);   
+module skylight_ost() resize([diameter_skylight_east, diameter_skylight_east, 500]) 
+    sphere(1, $fn=fast_curves?10:30);   
 module skylights_ost_outside() {
     for(i=placement_skylights_ost_flur) translate(i) rotate([0, -25, 0]) skylight_ost();
     for(i=placement_skylights_ost_mitte) translate(i) skylight_ost();
     };
 
-module skylight_nord() resize([900, 900, 500]) sphere(1, $fn=fast_curves?10:30);   
+module skylight_nord() resize([diameter_skylight_north, diameter_skylight_north, 500]) 
+    sphere(1, $fn=fast_curves?10:30);   
 module skylights_nord_outside() {
     for(i=placement_skylights_nord_flur) translate(i) skylight_nord();
     for(i=placement_skylights_nord_bad1) translate(i) rotate([-15, 0, 0]) skylight_nord();
@@ -927,6 +942,14 @@ module skylights_nord_outside() {
     for(i=placement_skylights_nord_dachboden1) translate(i) rotate([10, 0, 0])skylight_nord();
     for(i=placement_skylights_nord_dachboden2) translate(i) rotate([-10, 0, 0])skylight_nord();
 }
+
+module skylight_in_floor_plan(diameter, placement)
+    color(color_skylight_floorplan) for (i=placement) translate(i) 
+difference(){
+    cylinder(5, diameter/2, diameter/2, true, $fn=fast_curves?10:30);
+    cylinder(10, diameter/2-line_width, diameter/2-line_width, true, $fn=fast_curves?10:30);
+}
+
 
 module metall() color(color_metal){
     for (i=tree_placement) translate(i) baumzaun();
