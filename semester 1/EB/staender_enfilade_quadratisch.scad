@@ -46,7 +46,7 @@ for (x=tb/2, y=[-l*0.5, l*0.5], z = h) [x, y, z]*scale,
 for (x=[-b/2, b/2], y=[-l*0.5, l*0.5], z = [h/3, 2*h/3]) [x, y, z]*scale,
 ]; 
 
-module loetpunkte() for (i=points) translate(i) cube(8, true);
+module loetpunkte() for (i=points) translate(i) sphere(6);//cube(8, true);
 
 module stripes()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[p:d:110]) rotate([0, 0, 45]) rotate([wx, 0, 0])  
