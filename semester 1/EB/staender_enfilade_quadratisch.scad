@@ -18,7 +18,7 @@ h = 2500;           // Raumhöhe
 tb = 833;           // Türbreite
 fb = 833;           // Fensterbreite
 
-wstrk = 1.65 / scale;    // Wandstärke
+wstrk = 1.5 / scale;    // Wandstärke
 wx = 55;            // Winkel
 d = 9.65;           // Streifen Abstand
 p = -86.8;          // Streifen Position
