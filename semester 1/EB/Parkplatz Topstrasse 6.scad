@@ -202,13 +202,13 @@ else if (mode==7)                // komplettes Haus
 else if (mode==8)
     difference(){
         haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
-        translate([-e, 0, 0]) cube([x_cutheight * scale +e, 250, 200], center=false);
+        color("black") translate([-e, 0, 0]) cube([x_cutheight * scale +e, 250, 200], center=false);
     }
 else if (mode==9)
     projection() {
         intersection(){
             translate([0, 0, x_cutheight * scale]) cube([20000, 20000, 0.1], center=true);
-            rotate([0, 90, 0]) haus();
+            rotate([0, 90, 0]) haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
         };
     }
 
