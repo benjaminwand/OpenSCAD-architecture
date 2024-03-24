@@ -9,6 +9,7 @@
 * Treppen einzeichnen
 * Aussenwand stärken überprüfen
 * Rohbau anlegen
+* Wie viele quadratmeter pro person sind das?
 */
 /*
 öffentlich räume:
@@ -44,23 +45,25 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 0;
+eg = 1;
 og1 = 1;
-og2 = 0;
+og2 = 2;
 og3 = 0;
 og4 = 0;
 dach = 0;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
-openings_implied = 1;
+openings_implied = 0;
 fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
 metall = 0;             // Zäunchen
 parking = 0;
 color_index = 0;
 storey_label = 0;
-text = 1;               // Text in Innenräumen
+text = 0;               // Text in Innenräumen
 line_width = 100;       // for drawing skylights on floor plans
+barrel_vault = 1;
+skylights = 0;
 
 /*
 0 komplettes Haus                   mit Innenräumen 
@@ -71,8 +74,9 @@ line_width = 100;       // for drawing skylights on floor plans
 5 Haus Ost                          ohne innenräume
 6 Haus Nord und Nordost             ohne innenräume
 7 komplettes Haus Ansicht außen     ohne innenräume
+8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen 
 */
-mode = 0;
+mode = 8;
 
 
 {// Farben
@@ -188,8 +192,14 @@ intersection(){
         scale([1, 1, 10]) rotate([0, 0, 90])translate ([2000, -47000, 0]) cube([26300, 7600, 2100]); 
     };
 }
-if (mode==7)                // komplettes Haus
+else if (mode==7)                // komplettes Haus
     haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0);
+    
+else if (mode==8)
+    difference(){
+        haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
+        translate([-10, 0, 0]) cube([50, 250, 200], center=false);
+        };
     
 module haus($elevator)
 //rotate([0, 0, -rot])
@@ -223,18 +233,18 @@ scale(scale)
                 if (dach) dachform_nord(h_bodenplatte + 3*storey_height_high+ 2* d_floor);
             };
             if (og1) parking_barrel_vaults();
-            if (og2 && og3 && ally) skylights_ally_outside();
-            if (dach) skylights_ost_outside();
-            if (dach) skylights_nord_outside();
+            if (og2 && og3 && ally && skylights) skylights_ally_outside();
+            if (dach && skylights) skylights_ost_outside();
+            if (dach && skylights) skylights_nord_outside();
         }
         raeume_innen($text=0);
         entrances($entrance_doors=1);
          
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
     }
-    if (og2 && !og3 && mode==0) 
+    if (og2 && !og3 && mode==0 && skylights) 
         skylight_in_floor_plan(diameter_skylight_south, concat(placement_skylights_ally_middle, placement_skylights_ally_north, placement_skylights_ally_south));
-    if (og4 && !dach && mode==0) {
+    if (og4 && !dach && mode==0 && skylights) {
         skylight_in_floor_plan(diameter_skylight_east, concat(placement_skylights_ost_flur, placement_skylights_ost_mitte));
         skylight_in_floor_plan(diameter_skylight_north, concat(placement_skylights_nord_flur, placement_skylights_nord_bad1, placement_skylights_nord_bad2, placement_skylights_nord_dachboden1, placement_skylights_nord_dachboden2));
         }
@@ -561,7 +571,7 @@ module a11y(h) translate([0, 500]){
             translate ([11800, 9500, h]) cube([4000, 5200, storey_height_ally]); 
             translate ([16000, 12200, h]) bad_barrierefrei();}
         };
-        inner_ally_vault(h);
+        if (barrel_vault) inner_ally_vault(h);
     };
     
     if ($doors) color(color_private) {
@@ -917,6 +927,22 @@ module inner_ally_vault(h){
         resize([39400+2*e, 12800, storey_height_ally*2- 2000*2]) 
             rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:30);
 };
+
+module inner_ost_vault(h){
+rotate([0, 0, 90]) union(){
+    translate ([2000, -46900, h]) cube([26300, 6800, 2100]); 
+    translate([2000-e, -49500+13600/2, h + 2000]) 
+        resize([26300+2*e, 6800, storey_height_ally*2- 2000*2]) 
+            rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:50);
+}};
+
+module inner_ord_vault(h){
+union(){
+    translate ([0, 37600, h]) cube([33500, 10600, 2200]); 
+    translate([-e, 37200+11400/2, h + 2000]) 
+        resize([33500+2*e, 10600, storey_height_ally*2- 2000*2]) 
+            rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:30);
+}};
 
 module skylight_ally() resize([diameter_skylight_south, diameter_skylight_south, 500])  
     sphere(1, $fn=fast_curves?10:30);
