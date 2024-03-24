@@ -2,9 +2,11 @@
 * Tonnengewölbe nord
 * Tonnengewölbe ost
 * Schnitt
+    * Räume entfernen die man im Schneii nicht raucht um Rechenleistung zu sparen
     * Fundament einzeichnen
     * Schnitt Ort wählen
     * Schnitt mode anlegen
+    * Schnitt(e) in Grundriss einzeichnen
 * Fensterhöhe überprüfen
 * Treppen einzeichnen
 * Aussenwand stärken überprüfen
