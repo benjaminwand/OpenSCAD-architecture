@@ -376,18 +376,20 @@ module raeume_innen() {
         //-> 60, davon 20 barrierefrei und 8 Kinder
     };
 
-    if ($staircase)
+    if ($staircase && !! mode==8 && !! mode==9)
         //if (eg || og1 || og2 || og3)
         color(color_access) {       // Treppenhaus süd + Probenraum
             translate ([18000, 2400, 0]) cube([4000, 5200, h_bodenplatte+2*storey_height_ally + d_bodenplatte]); // Treppenhaus süd
             if (og1) translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); // Gang zum Hof am treppenhaus süd
             if (og2) translate ([19000, 7600, h_bodenplatte + storey_height_ally + d_floor]) cube([2000, 2000, storey_height_ally]); // Treppenhaus Süd
         };
-    if ($elevator) color(color_elevator) translate ([19067.5, 3467.5, 0])
-        cube([1865, 2845, h_bodenplatte+2*storey_height_ally]); // Fahrstuhl süd
+    if ($elevator && !! mode==8 && !! mode==9) 
+        color(color_elevator) translate ([19067.5, 3467.5, 0])
+            cube([1865, 2845, h_bodenplatte+2*storey_height_ally]); // Fahrstuhl süd
 
-    if ($windows) opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte -1000);
-    if ($windows) opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte + 2500);
+    if ($windows && !! mode==8 && !! mode==9) 
+        {opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte -1000);
+        opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte + 2500);}
 
 
     if ($rooms && og2) color(color_public) translate([0, 0, h_bodenplatte + storey_height_ally + d_floor])    // Musikraum
@@ -400,7 +402,7 @@ module raeume_innen() {
         translate([0, 0, h_bodenplatte + storey_height_ally + d_floor])
             room_text("Musik", size = 700, placement=[-12800, 19100, 0]);
 
-    if ($staircase) color(color_access) {                   // Treppenhaus ost
+    if ($staircase && !! mode==8 && !! mode==9) color(color_access) {                   // Treppenhaus ost
         translate ([41400, 25600, 0])
             cube([5200, 2300, 4* storey_height_high + h_bodenplatte+3*d_floor]);
         translate ([0, 0, h_bodenplatte]) linear_extrude(storey_height_high)
@@ -446,10 +448,10 @@ module raeume_innen() {
             }
         };
 
-    if (og1)                    // Gemeinschaftsräume nordost
+    if (og1)            // Gemeinschaftsräume nordost
         union(){
         color(color_public) translate([0, 0, h_bodenplatte]) {
-            if ($rooms){
+            if ($rooms && !! mode==8 && !! mode==9){
                 union(){
                 translate ([18200, 38100, 0]) cube([7500, 5200, storey_height_high]);
                 translate ([19300, 38100, 0]) cube([2800, 6900, storey_height_high]);
@@ -466,7 +468,7 @@ module raeume_innen() {
                 translate ([30900, 44500, 0]) cube([2100, 4200, storey_height_high]); // Gästezimmer 4
             }
 
-            if ($doors){
+            if ($doors && !! mode==8 && !! mode==9){
                 translate ([18400, 43600, 0]) tuer_barrierefrei();  // Treppenhaus Nord
                 translate ([38500, 27000, 0]) rotate([0, 0, 38])
                     tuer_barrierefrei(); // Treppenhaus Ost
@@ -611,7 +613,7 @@ module a11y(h) translate([0, 500]){
 }
 
 module a11y_east(h) {
-    translate([40000, 0, 0]) mirror([1, 0, 0])  a11y(h);
+    if (!! mode==8 && !! mode==9) translate([40000, 0, 0]) mirror([1, 0, 0]) a11y(h);
     if ($text) color(color_text) translate([0, 0, h])  {
         room_text("Bad", size = 700, placement=[10800, 2300, 0]);
         room_text("Bad", size = 700, placement=[10800, 5100, 0]);
@@ -646,7 +648,7 @@ module ally_windows_west(h)
             opening_west_ally(1200, 1100, -200, y, h + 800);
 
 module we_05(h) translate ([0,0, h]){
-    if ($rooms) color(color_private) {
+    if ($rooms  && !! mode==8 && !! mode==9) color(color_private) {
         translate ([39800, 6300, 0]) cube([1200, 20200, storey_height_high]);     // Flur
         translate ([40000, 25600, 0]) cube([1200, 900, storey_height_high]);      // Flur
         linear_extrude(3000) polygon([[39800, 26500], [37800, 24900], [39900, 22400]]); // Genkan
@@ -664,7 +666,7 @@ module we_05(h) translate ([0,0, h]){
         translate ([39800, 2400, 0]) cube([6800, 3700, storey_height_high]);      // Küche / Wohnen
     }
 
-    if ($doors) color(color_private) {
+    if ($doors && !! mode==8 && !! mode==9) color(color_private) {
         translate ([40000,6000, 0]) tuer_innen();
         translate ([40900,7800, 0]) tuer_innen();
         translate ([40900,11800, 0]) tuer_innen();
@@ -714,11 +716,12 @@ module opening_ost_hof_1(z) if($windows) color(color_private) {
 
 module we_06(h) translate ([0,0, h]){
     we_05(0);
+    if (!! mode==8 && !! mode==9){
+        if ($rooms) color(color_private)  // Zimmer Nord
+            linear_extrude(3000) polygon([[41200, 26700],[41200, 28100],[41400, 28100],[38000, 32100], [34350, 29000], [37650, 25100], [39700, 26700]]);
 
-    if ($rooms) color(color_private)  // Zimmer Nord
-        linear_extrude(3000) polygon([[41200, 26700],[41200, 28100],[41400, 28100],[38000, 32100], [34350, 29000], [37650, 25100], [39700, 26700]]);
-
-    if ($doors) color(color_private) translate ([40000, 26300, 0]) tuer_innen();
+        if ($doors) color(color_private) translate ([40000, 26300, 0]) tuer_innen();
+    }
 };
 
 module we_09(h) translate ([0,0, h]){
@@ -850,7 +853,7 @@ module family(h) {
     }
 }
 
-module eg_innen(){          // öffentlicher Raum
+module eg_innen()if (!! mode==8 && !! mode==9){          // öffentlicher Raum
     if ($rooms) color(color_full_public){
         translate ([39900, 2400, 0]) cube([6700, 22900, h_bodenplatte - d_bodenplatte]);
         translate ([39900, 25200, 0]) cube([1200, 2700, h_bodenplatte - d_bodenplatte]);
