@@ -51,19 +51,30 @@ module loetpunkte() for (i=points) translate(i) sphere(6);//cube(8, true);
 module stripes()let(xyz = [wstrk, 3*l + 4*wstrk, h+wstrk])
 for(i=[p:d:110]) rotate([0, 0, 45]) rotate([wx, 0, 0])  
     translate([0, 0, i]) cube([200, 200, wstrk*scale], true);
+    
+module skylights() {
+    translate([-b/2, -fb/2, h]) cube ([b, fb, wstrk]);
+    translate([-b/2, l-fb/2, h]) cube ([b, fb, wstrk]);
+    translate([-b/2, -l-fb/2, h]) cube ([b, fb, wstrk]);
+}
+
+module skylights_narrow() {
+    translate([wstrk-b/2, minw-fb/2, h-2*wstrk]) cube ([b-2*wstrk, fb-2*minw, 3*wstrk]);
+    translate([wstrk-b/2, minw+l-fb/2, h-2*wstrk]) cube ([b-2*wstrk, fb-2*minw, 3*wstrk]);
+    translate([wstrk-b/2, minw-l-fb/2, h-2*wstrk]) cube ([b-2*wstrk, fb-2*minw, 3*wstrk]);
+}
 
 module ghost(){
     translate([-b/2, -l/2]) cube ([b, l, h]);
     translate([-b/2, wstrk +l/2]) cube ([b, l, h]);
     translate([-b/2, -wstrk -1.5*l]) cube ([b, l, h]);
-    translate([-b/2, -fb/2, h]) cube ([b, fb, wstrk]);
-    translate([-b/2, l+wstrk-fb/2, h]) cube ([b, fb, wstrk]);
-    translate([-b/2, -l-wstrk-fb/2, h]) cube ([b, fb, wstrk]);
+    skylights();
     translate([-tb/2, 1.5*l-wstrk/2, 0]) cube ([tb, wstrk, h]);
     translate([-tb/2, -1.5*l-wstrk/2, 0]) cube ([tb, wstrk, h]);
     translate([-tb/2, 0.5*l-wstrk/2, 0]) cube ([tb, wstrk, h]);
     translate([-tb/2, -0.5*l-wstrk/2, 0]) cube ([tb, wstrk, h]);
 }
+
 
 stellen()
 {
@@ -152,5 +163,6 @@ else rotate([180, 0, 90])
         }
         loetpunkte();
         if (aussenstreifen) scale(scale) aussenstreifen();
+        scale(scale)skylights_narrow();
     }   
 };
