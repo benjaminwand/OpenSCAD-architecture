@@ -80,7 +80,7 @@ skylights = 1;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 */
-mode = 8;
+mode = 9;
 
 
 {// Farben
@@ -206,9 +206,9 @@ else if (mode==8)
         color(color_cut) translate([-10, 0, 0]) cube([x_cutheight * scale +10, 250, 200], center=false);
     }
 else if (mode==9)
-    projection() {
+    rotate([0, 0, 90]) projection() {
         intersection(){
-            translate([0, 0, x_cutheight * scale]) cube([20000, 20000, 0.1], center=true);
+            translate([0, 0, -x_cutheight * scale]) cube([2000, 2000, 0.1], center=true);
             rotate([0, 90, 0]) haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
         };
     }
@@ -218,7 +218,7 @@ module haus($elevator)
 scale(scale)
 //translate([-22500, -22000])
 {
-    if(grundstueck) grundstueck();
+    if (grundstueck) grundstueck();
     difference(){
         union(){
             if (og1) grundplatte(d_bodenplatte);
