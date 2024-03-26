@@ -6,6 +6,7 @@ staenderwerk = 0;       // ständer 3d version. else: diff mit Box
 ghost = 0;
 A4 = 0;
 aussenstreifen = 1;
+base=1;
 
 
 // Maße
@@ -29,7 +30,7 @@ minw = 1.2 / scale;
 if (ghost) %scale(scale) ghost();              // innenraum
 if (A4) %square([200,200*sqrt(2)], true);   // Din A4 Referenz
 //rotate([0,0, 45]) cube(120, true);  // 45° Referenz
-
+if (base) cube([180, 80, 0.2], true);
 
 // Lötpunkte
 points = [
@@ -154,7 +155,7 @@ else if (staenderwerk){
     if (aussenstreifen) scale(scale) aussenstreifen();
     }
     
-else rotate([180, 0, 90]) 
+else translate([0, 0, (h+wstrk/2+minw)*scale]) rotate([180, 0, 90]) 
     difference() {
         scale(scale) aussenbox();
         intersection(){
