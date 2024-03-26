@@ -322,13 +322,13 @@ module opening_south_ally(x, z, x_pos, y_pos, z_pos)
         translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
         translate([x_pos, y_pos + 400, z_pos]) cube([x, 300, z]);
     };
-module opening_south_3000(x, z, x_pos, y_pos, z_pos)
+/*module opening_south_3000(x, z, x_pos, y_pos, z_pos)
     if (openings_implied)
         translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
     else {
         translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
         translate([x_pos, y_pos + 400, z_pos]) cube([x, 300, z]);
-    };
+    };*/
 module opening_west_ally(y, z, x_pos, y_pos, z_pos)
     if (openings_implied)
         translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
@@ -336,13 +336,13 @@ module opening_west_ally(y, z, x_pos, y_pos, z_pos)
         translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
         translate([x_pos + 400, y_pos, z_pos]) cube([300, y, z]);
     };
-module opening_west_3000(y, z, x_pos, y_pos, z_pos)
+/*module opening_west_3000(y, z, x_pos, y_pos, z_pos)
     if (openings_implied)
         translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
     else {
         translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
         translate([x_pos + 400, y_pos, z_pos]) cube([300, y, z]);
-    };
+    };*/
 
 module opening_3000(breite, hoehe, x_pos, y_pos, z_pos, z_rot = 0)
     translate([x_pos, y_pos, z_pos]) rotate([0, 0, z_rot])
