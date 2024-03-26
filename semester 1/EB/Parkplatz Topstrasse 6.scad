@@ -1055,8 +1055,8 @@ color(color_arches)
 difference(){
     translate([0, 0, -height_middle + height_side])
         cube([length, width, height_middle- height_side], false);
-    translate([-e, width/2, -height_middle + height_side])
-        resize([length+2*e, width - distances*2, height_middle*2- height_side*2])
+    translate([-5, width/2, -height_middle + height_side])
+        resize([length+10, width - distances*2, height_middle*2- height_side*2])
             rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:30);
 }
 module parking_barrel_vaults() translate([0, 0, -e]) {
