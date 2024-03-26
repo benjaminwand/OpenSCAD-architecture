@@ -2,13 +2,13 @@
 * Geschoßhöhen parametrisieren
 * Tonnengewölbe nord
 * Tonnengewölbe ost
+* Treppen einzeichnen
 * Schnitt
     * Fundament einzeichnen
     * Schnitt Ort wählen
     * Schnitt mode anlegen
     * Schnitt(e) in Grundriss einzeichnen
 * Fensterhöhe überprüfen
-* Treppen einzeichnen
 * Aussenwand stärken überprüfen
 * Rohbau anlegen
 * Wie viele quadratmeter pro person sind das?
@@ -80,7 +80,7 @@ skylights = 1;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 */
-mode = 1;
+mode = 8;
 
 
 {// Farben
@@ -98,7 +98,7 @@ color_metal = "goldenrod";
 color_text = "black";
 color_parking = "lightgrey";
 color_skylight_floorplan = "lightgrey";
-color_cut = "pink";}
+color_cut = "red";}
 
 {// Maße
 h_bodenplatte = 5000;
@@ -118,6 +118,13 @@ tree_placement = [
 storey_height_ally = 3300;
 storey_height_high = 3300;
 roof_thickness = 300;
+
+// Geschosshöhen
+floor_1 = h_bodenplatte;
+floor_2 = floor_1 + d_floor + storey_height_high;
+floor_3 = floor_2 + d_floor + storey_height_high;
+floor_4 = floor_3 + d_floor + storey_height_high;
+echo(floor_1=floor_1, floor_2=floor_2);
 
 // Sky lights
 placement_skylights_ally_middle = [[1800, 8800, 12100],[5000, 8800, 12100],[8000, 8800, 12100],[11000, 8800, 12100],[14000, 8800, 12100],[17000, 8800, 12100],[20000, 8800, 12100],
@@ -226,20 +233,20 @@ scale(scale)
                 translate([x, y]) bodensaeule();
             eg_aussen();
             if (walls){
-                if (og1) hausform3000(og2?storey_height_high - e:1000, h_bodenplatte);
-                if (og2) hausform3000(og3?d_floor + storey_height_high - e:1100, h_bodenplatte + storey_height_high);
-                if (og3) hausform3000(og4?d_floor + storey_height_high - e:1000, h_bodenplatte + d_floor + 2*storey_height_high);
+                if (og1) hausform3000(og2?d_floor + storey_height_high - e:1000, floor_1);
+                if (og2) hausform3000(og3?d_floor + storey_height_high - e:1100, floor_2);
+                if (og3) hausform3000(og4?d_floor + storey_height_high - e:1000, floor_3);
                 if (og4) union(){
                     color(color_yard) hausform3000(d_floor -e, h_bodenplatte + 2*d_floor + 3*storey_height_high);
                     color(color_walls) {
-                        rotate([0, 0, 90]) translate ([2000, -47000, h_bodenplatte + 2*d_floor + 3*storey_height_high]) cube([26300, 7600, dach?d_floor:1500]);
-                        translate ([0, 37700, h_bodenplatte + 2*d_floor + 3*storey_height_high]) cube([33500, 11400, dach?d_floor:1500]);
+                        rotate([0, 0, 90]) translate ([2000, -47000, floor_4]) cube([26300, 7600, dach?d_floor:1500]);
+                        translate ([0, 37700, floor_4]) cube([33500, 11400, dach?d_floor:1500]);
                     };
                 };
 
-                if (og1 && ally) hausform2500(og2?storey_height_ally - e:1000, h_bodenplatte);
-                if (og2 && og3 && ally) dachform2500(h_bodenplatte + storey_height_ally);
-                if (og2 && !og3 && ally) hausform2500(1000, h_bodenplatte + storey_height_ally);
+                if (og1 && ally) hausform2500(og2?d_floor + storey_height_ally - e:1000, floor_1);
+                if (og2 && og3 && ally) dachform2500(floor_2);
+                if (og2 && !og3 && ally) hausform2500(1000, floor_2);
 
                 if (dach) dachform_ost(h_bodenplatte + 3*storey_height_high+ 2* d_floor);
                 if (dach) dachform_nord(h_bodenplatte + 3*storey_height_high+ 2* d_floor);
