@@ -1,5 +1,4 @@
 /*
-* Geschoßhöhen parametrisieren
 * Tonnengewölbe nord
 * Tonnengewölbe ost
 * Treppen einzeichnen
@@ -8,8 +7,12 @@
     * Schnitt(e) in Grundriss einzeichnen
 * Fensterhöhe überprüfen
 * Aussenwand stärken überprüfen
+* alles exportieren
 * Rohbau anlegen
+    * Fahrstuhl
 * Wie viele quadratmeter pro person sind das?
+* Farben Treppenhausfenster
+* Dachfenster Farben anpassen nach öffentlich und privat
 */
 /*
 öffentlich räume:
@@ -45,20 +48,20 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
-e = 0;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
+e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
 eg = 1;
-og1 = 1;
-og2 = 1;
-og3 = 1;
-og4 = 1;
-dach = 1;
+og1 = 0;
+og2 = 0;
+og3 = 0;
+og4 = 0;
+dach = 0;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
-openings_implied = 1;
-fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
+openings_implied = 0;
+fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
 metall = 0;             // Zäunchen
-parking = 0;
+parking = 1;
 color_index = 0;
 storey_label = 0;
 text = 0;               // Text in Innenräumen
@@ -78,13 +81,13 @@ skylights = 1;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 */
-mode = 8;
+mode = 0;
 
 
 {// Farben
 color_walls = "black";
 color_yard = "lightgrey";
-color_pillars = "darkgrey";
+color_pillars = "black";
 color_arches = "grey";
 color_access = "cyan";
 color_elevator = "DeepSkyBlue";
@@ -96,7 +99,7 @@ color_metal = "goldenrod";
 color_text = "black";
 color_parking = "lightgrey";
 color_skylight_floorplan = "lightgrey";
-color_cut = "red";}
+color_cut = "#8F3985";}
 
 {// Maße
 h_bodenplatte = 5000;
@@ -122,7 +125,6 @@ floor_1 = h_bodenplatte;
 floor_2 = floor_1 + d_floor + storey_height_high;
 floor_3 = floor_2 + d_floor + storey_height_high;
 floor_4 = floor_3 + d_floor + storey_height_high;
-echo(floor_1=floor_1, floor_2=floor_2);
 
 // Sky lights
 {
@@ -367,37 +369,37 @@ module raeume_innen() {
         if (og1 && ally) we_03_ally_innen();                // 5
         if (og2 && ally) we_04_ally_innen();                // 5
 
-        if (og1) we_05(h_bodenplatte);                      // 4
+        if (og1) we_05(floor_1);                            // 4
         if (og1 && $windows) opening_ost_hof_1(floor_1);
         if (og2) we_06(floor_2);                            // 5
         if (og2 && $windows) opening_ost_hof_unten(floor_2);
         if (og3) we_06(floor_3);                            // 5
         if (og3 && $windows) opening_ost_hof_unten(floor_3);
-        if (og4) we_09(floor_4);                            //4
+        if (og4) we_09(floor_4);                            // 4
 
         if (og2) we_08_paare(floor_2);                      // 4
         if (og3) we_08_paare(floor_3);                      // 4
         if (og4) we_08_paare(floor_4);                      // 4
         if (og2) family(floor_2);                           // 7
         if (og3) family(floor_3);                           // 7
-        //-> 60, davon 20 barrierefrei und 8 Kinder
+        //-> 60, davon 20 explizit barrierefrei und 8 Kinder
     };
 
     if ($staircase && mode!=8 && mode!=9)
-        //if (eg || og1 || og2 || og3)
         color(color_access) {       // Treppenhaus süd + Probenraum
-            translate ([18000, 2400, 0]) cube([4000, 5200, h_bodenplatte+2*storey_height_ally + d_bodenplatte]); // Treppenhaus süd
-            if (og1) translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); // Gang zum Hof am treppenhaus süd
-            if (og2) translate ([19000, 7600, h_bodenplatte + storey_height_ally + d_floor]) cube([2000, 2000, storey_height_ally]); // Treppenhaus Süd
+            translate ([18000, 2400, 0]) cube([4000, 5200, floor_4]); // Treppenhaus süd
+            if (og1)        // Gang zum Hof am treppenhaus süd
+                translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); 
+            if (og2) // Treppenhaus Süd
+                translate ([19000, 7600, floor_2]) cube([2000, 2000, storey_height_ally]); 
         };
     if ($elevator && mode!=8 && mode!=9) 
         color(color_elevator) translate ([19067.5, 3467.5, 0])
-            cube([1865, 2845, h_bodenplatte+2*storey_height_ally]); // Fahrstuhl süd
+            cube([1865, 2845, floor_4]);            // Fahrstuhl süd
 
     if ($windows && mode!=8 && mode!=9) 
         {opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte -1000);
         opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte + 2500);}
-
 
     if ($rooms && og2 && mode!=8 && mode!=9) 
     color(color_public) translate([0, 0, floor_2])    // Musikraum
@@ -424,13 +426,13 @@ module raeume_innen() {
             opening_3000(1200, 1500, 47150, 26200, z, 90);
 
     if ($staircase) color(color_access) {        // Treppenhaus nord
-        translate ([15100, 43500, 0]) cube([4000, 5200, 4* storey_height_high + h_bodenplatte]); // Treppenhaus Nord
-
-        if (og1) translate ([16000, 38100, h_bodenplatte]) cube([2000, 7600, storey_height_high]); // Gang zum Hof am treppenhaus nord
+        translate ([15100, 43500, 0]) cube([4000, 5200, floor_4]); // Treppenhaus Nord
+        if (og1)                   // Gang zum Hof am treppenhaus nord
+            translate ([16000, 38100, h_bodenplatte]) cube([2000, 7600, storey_height_high]);
         };
 
     if ($elevator) color(color_elevator) translate ([16200, 44700, 0])
-        cube([1865, 2845, h_bodenplatte+12500]); // Fahrstuhl nord
+        cube([1865, 2845, floor_4+5]);            // Fahrstuhl nord
 
     if (og1)                    // Gemeinschaftsräume nordwest
         union(){
@@ -884,7 +886,7 @@ module eg_innen() if (mode!=8 && mode!=9){          // öffentlicher Raum
 module eg_aussen() color(color_walls) {
     translate ([39500, 2000, 0]) cube([7500, 26300, og1?h_bodenplatte - d_bodenplatte - e:1000]);
     if (eg || og1 || og2 || og3 || og4)
-        translate ([14700, 43100, 0]) cube([4800, 6000, og1?h_bodenplatte - d_bodenplatte - e:1000]);
+        translate ([14700, 43100, 0]) cube([4800, 6000, og1?h_bodenplatte /*- d_bodenplatte */-e:1000]);
     if (eg) for (x=[stangen_x*2:stangen_x*3], y=stangen_y_neu[3])
         hull() {translate([x, y]) bodensaeule();}
     if (eg || og1 || og2)
