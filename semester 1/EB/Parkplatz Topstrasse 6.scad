@@ -886,9 +886,11 @@ module eg_innen() if (mode!=8 && mode!=9){          // öffentlicher Raum
 module eg_aussen() color(color_walls) {
     translate ([39500, 2000, 0]) cube([7500, 26300, og1?h_bodenplatte - d_bodenplatte - e:1000]);
     if (eg || og1 || og2 || og3 || og4)
-        translate ([14700, 43100, 0]) cube([4800, 6000, og1?h_bodenplatte /*- d_bodenplatte */-e:1000]);
-    if (eg) for (x=[stangen_x*2:stangen_x*3], y=stangen_y_neu[3])
-        hull() {translate([x, y]) bodensaeule();}
+        translate ([14700, 43100, 0]) cube([4800, 6000, og1?h_bodenplatte - d_bodenplatte -e:1000]);
+    if (eg) 
+        {translate ([13600, stangen_y_neu[3], 0]) cube([1100, dicke_saeule, og1?h_bodenplatte - d_bodenplatte - e:1000]);
+        translate ([19300, stangen_y_neu[3], 0]) cube([1000, dicke_saeule, og1?h_bodenplatte - d_bodenplatte - e:1000]);
+        }
     if (eg || og1 || og2)
         translate ([17600, 2000, 0]) cube([4800, 6000, og1?h_bodenplatte - d_bodenplatte - e:1000]);
 }
