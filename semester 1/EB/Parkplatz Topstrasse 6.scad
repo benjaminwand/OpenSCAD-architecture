@@ -392,7 +392,10 @@ module raeume_innen() {
 
     if ($staircase && mode!=8 && mode!=9)
         color(color_access) {       // Treppenhaus süd + Probenraum
+            difference(){
             translate ([18000, 2400, 0]) cube([4000, 5200, floor_4]); // Treppenhaus süd
+            translate ([19067.5, 3467.5, 0]) cube([1865, 2845, floor_4]);
+            };
             if (og1)        // Gang zum Hof am treppenhaus süd
                 translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); 
             if (og2) // Treppenhaus Süd
@@ -1054,8 +1057,7 @@ module stairs_simple(h, t, b, floor_height = d_floor)
             [0, 0],
         ]);
     
-module stairs() color(color_access)
-{
+module stairs() color(color_access){
     // north
     translate ([19100, 43500]) rotate([0, 0, 180]) 
         stairs_simple(floor_1*0.2, 4000, 1080);
@@ -1091,6 +1093,24 @@ module stairs() color(color_access)
         stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([15100, 43500, floor_4-d_floor]) cube([4000, 1200, d_floor]);
 
+    //south
+    translate ([18000, 7600, 0]) rotate([0, 0, 0]) 
+        stairs_simple(floor_1*0.2, 4000, 1300);
+    translate ([22000, 7580, floor_1*0.2]) rotate([0, 0, -90]) 
+        stairs_simple(floor_1*0.3, 5200, 1080);
+    translate ([22000, 2400, floor_1*0.5]) rotate([0, 0, 180]) 
+        stairs_simple(floor_1*0.2, 4000, 1170);
+    translate ([18000, 2400, floor_1*0.7]) rotate([0, 0, 90]) 
+        stairs_simple(floor_1*0.3, 5200, 1070);
+    translate ([18000, 6300, floor_1-d_floor]) cube([4000, 1300, d_floor]);
+    
+    translate ([22000, 7580, floor_1]) rotate([0, 0, -90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1080);
+    translate ([22000, 2400, floor_1 +storey_height_high*0.4]) rotate([0, 0, 180]) 
+        stairs_simple(storey_height_high*0.2, 4000, 1170);
+    translate ([18000, 2400, floor_1 +storey_height_high*0.6]) rotate([0, 0, 90]) 
+        stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
+    translate ([18000, 6300, floor_2-d_floor]) cube([4000, 1300, d_floor]);
     
     
     }
