@@ -1120,12 +1120,12 @@ module stairs() color(color_access){
     translate ([18000, 6300, floor_2-d_floor]) cube([4000, 1300, d_floor]);
     
     // east
-    translate ([45400, 26750, 0]) rotate([0, 0, 180]) 
-        stairs_simple(floor_1*0.2, 4000, 1150);
-    translate ([41400, 26750, floor_1*0.2]) rotate([0, 0, 0]) 
-        stairs_simple(floor_1*0.4, 5200, 1150);
-    translate ([46600, 26750, floor_1*0.6]) rotate([0, 0, 180]) 
-        stairs_simple(floor_1*0.4, 5200, 1150);
+    translate ([45700, 26750, 0]) rotate([0, 0, 180]) 
+        stairs_simple(floor_1*0.3, 4300, 1150);
+    translate ([41400, 26750, floor_1*0.3]) rotate([0, 0, 0]) 
+        stairs_simple(floor_1*0.35, 5200, 1150);
+    translate ([46600, 26750, floor_1*0.65]) rotate([0, 0, 180]) 
+        stairs_simple(floor_1*0.35, 5200, 1150);
     
     translate ([41400, 26750, floor_1]) rotate([0, 0, 0]) 
         stairs_simple(storey_height_high*0.5, 5200, 1150);
