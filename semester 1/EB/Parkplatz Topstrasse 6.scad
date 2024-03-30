@@ -1112,7 +1112,29 @@ module stairs() color(color_access){
         stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([18000, 6300, floor_2-d_floor]) cube([4000, 1300, d_floor]);
     
+    // east
+    translate ([45400, 26750, 0]) rotate([0, 0, 180]) 
+        stairs_simple(floor_1*0.2, 4000, 1150);
+    translate ([41400, 26750, floor_1*0.2]) rotate([0, 0, 0]) 
+        stairs_simple(floor_1*0.4, 5200, 1150);
+    translate ([46600, 26750, floor_1*0.6]) rotate([0, 0, 180]) 
+        stairs_simple(floor_1*0.4, 5200, 1150);
     
+    translate ([41400, 26750, floor_1]) rotate([0, 0, 0]) 
+        stairs_simple(storey_height_high*0.5, 5200, 1150);
+    translate ([46600, 26750, floor_1 +storey_height_high*0.5]) rotate([0, 0, 180]) 
+        stairs_simple(storey_height_high*0.5+d_floor, 5200, 1150);
+    
+    translate ([41400, 26750, floor_2]) rotate([0, 0, 0]) 
+        stairs_simple(storey_height_high*0.5, 5200, 1150);
+    translate ([46600, 26750, floor_2 +storey_height_high*0.5]) rotate([0, 0, 180]) 
+        stairs_simple(storey_height_high*0.5+d_floor, 5200, 1150);
+    
+    translate ([41400, 26750, floor_3]) rotate([0, 0, 0]) 
+        stairs_simple(storey_height_high*0.5, 5200, 1150);
+    translate ([46600, 26750, floor_3 +storey_height_high*0.5]) rotate([0, 0, 180]) 
+        stairs_simple(storey_height_high*0.5+d_floor, 5200, 1150);
+    translate ([41400, 25600, floor_4-d_floor]) cube([1150, 2300, d_floor]);
     }
 
 module parking()translate([0, 2400, 0]){
