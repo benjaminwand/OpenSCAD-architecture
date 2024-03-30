@@ -1,20 +1,21 @@
 /*
 * Tonnengewölbe nord
 * Tonnengewölbe ost
-* Tonnengewölbe aucgh mit Treppen vereinigen
+* Tonnengewölbe auch mit Treppen vereinigen
 * Schnitt
     * Fundament einzeichnen
     * Schnitt(e) in Grundriss einzeichnen
-* Fensterhöhe überprüfen
-* Aussenwand stärken überprüfen
-* alles exportieren
 * Rohbau anlegen
-    * Fahrstuhl Türen
-    * Dachluken
     * mode anlegen
+    * Dachluken
+    * innenwände weg nehmen
+* alle screenshots machen 
+
 * Wie viele quadratmeter pro person sind das?
 * Farben Treppenhausfenster
 * Dachfenster Farben anpassen nach öffentlich und privat
+* Fensterhöhe überprüfen
+* Aussenwand stärken überprüfen
 */
 /*
 öffentlich räume:
@@ -400,10 +401,14 @@ module raeume_innen() {
                 translate ([19000, 7600, floor_2]) cube([2000, 2000, storey_height_ally]); 
         };
     if ($elevator && mode!=8 && mode!=9) 
-        color(color_elevator) translate ([19067.5, 3467.5, 0])
-            cube([1865, 2845, floor_4]);            // Fahrstuhl süd
+        color(color_elevator) {                 // Fahrstuhl süd
+            translate ([19267.5, 3667.5, 0]) cube([1465, 2445, floor_4]);
+            translate ([19500, 3200, 0]) tuer_barrierefrei(); 
+            for (i=[floor_1, floor_2, floor_3, floor_4])
+                translate ([19500, 6000, i]) tuer_barrierefrei(); 
+        }
 
-    if ($windows && mode!=8 && mode!=9) 
+    if ($windows && mode!=8 && mode!=9) color(color_public)
         {opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte -1000);
         opening_south_ally(2000, 1300, 19000, 1850, h_bodenplatte + 2500);}
 
@@ -434,7 +439,7 @@ module raeume_innen() {
     if ($staircase) color(color_access) {        // Treppenhaus nord
         difference(){
         translate ([15100, 43500, 0]) cube([4000, 5200, floor_4+storey_height_high]); // Treppenhaus Nord
-        translate ([16200, 44700, 0])cube([1865, 2845, floor_4+5]); 
+        translate ([16200, 44700, 0])cube([1865, 2845, floor_4+5+storey_height_high]); 
         }
         if (og1)                   // Gang zum Hof am treppenhaus nord
             translate ([16000, 38100, h_bodenplatte]) cube([2000, 7600, storey_height_high]);
@@ -444,8 +449,7 @@ module raeume_innen() {
         translate ([16400, 44900, 0]) cube([1465, 2445, floor_4+storey_height_high]); 
         translate ([16620, 46800, 0]) tuer_barrierefrei(); 
         for (i=[floor_1, floor_2, floor_3, floor_4])
-        translate ([16620, 44500, i]) tuer_barrierefrei(); 
-        
+            translate ([16620, 44500, i]) tuer_barrierefrei(); 
         }
 
     if (og1)                    // Gemeinschaftsräume nordwest
