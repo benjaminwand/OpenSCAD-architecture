@@ -54,11 +54,11 @@ x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
 eg = 1;
-og1 = 1;
-og2 = 1;
-og3 = 1;
-og4 = 1;
-dach = 1;
+og1 = 0;
+og2 = 0;
+og3 = 0;
+og4 = 0;
+dach = 0;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 0;
@@ -85,7 +85,7 @@ skylights = 1;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 */
-mode = 8;
+mode = 0;
 
 
 {// Farben
@@ -154,7 +154,7 @@ diameter_skylight_north = 900;
 
 // flow control
 if (mode==0)                // komplettes Haus
-    haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=0);
+    haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=1);
 else if (mode==1)           // Horizontalschnitt auf Höhe z_cutheight
     projection() {
         intersection(){
@@ -1058,7 +1058,7 @@ module stairs() color(color_access)
 {
     // north
     translate ([19100, 43500]) rotate([0, 0, 180]) 
-        stairs_simple(floor_1*0.2, 5200, 1080);
+        stairs_simple(floor_1*0.2, 4000, 1080);
     translate ([15100, 43500, floor_1*0.2]) rotate([0, 0, 90]) 
         stairs_simple(floor_1*0.3, 5200, 1080);
     translate ([15100, 48700, floor_1*0.5]) rotate([0, 0, 0]) 
@@ -1072,7 +1072,7 @@ module stairs() color(color_access)
     translate ([15100, 48700, floor_1 +storey_height_high*0.4]) rotate([0, 0, 0]) 
         stairs_simple(storey_height_high*0.2, 4000, 1170);
     translate ([19100, 48700, floor_1 +storey_height_high*0.6]) rotate([0, 0, -90]) 
-        stairs_simple(storey_height_high*0.4, 5200, 1070);
+        stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([15100, 43500, floor_2-d_floor]) cube([4000, 1200, d_floor]);
     
     translate ([15100, 43500, floor_2]) rotate([0, 0, 90]) 
@@ -1080,7 +1080,7 @@ module stairs() color(color_access)
     translate ([15100, 48700, floor_2 +storey_height_high*0.4]) rotate([0, 0, 0]) 
         stairs_simple(storey_height_high*0.2, 4000, 1170);
     translate ([19100, 48700, floor_2 +storey_height_high*0.6]) rotate([0, 0, -90]) 
-        stairs_simple(storey_height_high*0.4, 5200, 1070);
+        stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([15100, 43500, floor_3-d_floor]) cube([4000, 1200, d_floor]);
         
     translate ([15100, 43500, floor_3]) rotate([0, 0, 90]) 
@@ -1088,7 +1088,7 @@ module stairs() color(color_access)
     translate ([15100, 48700, floor_3 +storey_height_high*0.4]) rotate([0, 0, 0]) 
         stairs_simple(storey_height_high*0.2, 4000, 1170);
     translate ([19100, 48700, floor_3 +storey_height_high*0.6]) rotate([0, 0, -90]) 
-        stairs_simple(storey_height_high*0.4, 5200, 1070);
+        stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([15100, 43500, floor_4-d_floor]) cube([4000, 1200, d_floor]);
 
     
