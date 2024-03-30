@@ -53,11 +53,11 @@ z_cutheight = 6000;
 x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 0;
-og1 = 0;
-og2 = 0;
-og3 = 0;
-og4 = 0;
+eg = 1;
+og1 = 1;
+og2 = 1;
+og3 = 1;
+og4 = 1;
 dach = 1;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
@@ -85,7 +85,7 @@ skylights = 1;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 */
-mode = 0;
+mode = 8;
 
 
 {// Farben
@@ -273,6 +273,7 @@ scale(scale)
         skylight_in_floor_plan(diameter_skylight_north, concat(placement_skylights_nord_flur, placement_skylights_nord_bad1, placement_skylights_nord_bad2, placement_skylights_nord_dachboden1, placement_skylights_nord_dachboden2));
         }
     if (text) raeume_innen($doors = 0, $rooms=0, $staircase=0, $windows=0, $text=1, $elevator=0);
+    if ($complex_stairs) stairs();
     if (metall) metall();
     if (parking && eg) parking();
   //  translate([35400, 31500, 6000]) rotate([0, 0, 40]) cube([5700, 25000,18000], center=true);
@@ -430,7 +431,10 @@ module raeume_innen() {
             opening_3000(1200, 1500, 47150, 26200, z, 90);
 
     if ($staircase) color(color_access) {        // Treppenhaus nord
-        translate ([15100, 43500, 0]) cube([4000, 5200, floor_4]); // Treppenhaus Nord
+        difference(){
+        translate ([15100, 43500, 0]) cube([4000, 5200, floor_4+storey_height_high]); // Treppenhaus Nord
+        cube([1865, 2845, floor_4+5]); 
+        }
         if (og1)                   // Gang zum Hof am treppenhaus nord
             translate ([16000, 38100, h_bodenplatte]) cube([2000, 7600, storey_height_high]);
         };
@@ -1049,6 +1053,41 @@ module stairs_simple(h, t, b, floor_height = d_floor)
             [0, -floor_height],
             [0, 0],
         ]);
+    
+module stairs() color(color_access)
+{
+    // north
+    translate ([15100, 43500]) rotate([0, 0, 90]) 
+        stairs_simple(floor_1*0.4, 5200, 1080);
+    translate ([15100, 48700, floor_1*0.4]) rotate([0, 0, 0]) 
+        stairs_simple(floor_1*0.2, 4000, 1170);
+    translate ([19100, 48700, floor_1*0.6]) rotate([0, 0, -90]) 
+        stairs_simple(floor_1*0.4, 5200, 1070);
+    
+    translate ([15100, 43500, floor_1]) rotate([0, 0, 90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1080);
+    translate ([15100, 48700, floor_1 +storey_height_high*0.4]) rotate([0, 0, 0]) 
+        stairs_simple(storey_height_high*0.2, 4000, 1170);
+    translate ([19100, 48700, floor_1 +storey_height_high*0.6]) rotate([0, 0, -90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1070);
+    
+    translate ([15100, 43500, floor_2]) rotate([0, 0, 90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1080);
+    translate ([15100, 48700, floor_2 +storey_height_high*0.4]) rotate([0, 0, 0]) 
+        stairs_simple(storey_height_high*0.2, 4000, 1170);
+    translate ([19100, 48700, floor_2 +storey_height_high*0.6]) rotate([0, 0, -90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1070);
+        
+    translate ([15100, 43500, floor_3]) rotate([0, 0, 90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1080);
+    translate ([15100, 48700, floor_3 +storey_height_high*0.4]) rotate([0, 0, 0]) 
+        stairs_simple(storey_height_high*0.2, 4000, 1170);
+    translate ([19100, 48700, floor_3 +storey_height_high*0.6]) rotate([0, 0, -90]) 
+        stairs_simple(storey_height_high*0.4, 5200, 1070);
+
+    
+    
+    }
 
 module parking()translate([0, 2400, 0]){
     for (i=[500:stangen_x:12000]) translate([i, 0, 0]) one_parking();
