@@ -1,7 +1,9 @@
 /*
+* Treppen einzeichnen
+    * "$komplexe treppe" variable
+    * modul importrieren
 * Tonnengewölbe nord
 * Tonnengewölbe ost
-* Treppen einzeichnen
 * Schnitt
     * Fundament einzeichnen
     * Schnitt(e) in Grundriss einzeichnen
@@ -54,7 +56,7 @@ og1 = 0;
 og2 = 0;
 og3 = 0;
 og4 = 0;
-dach = 0;
+dach = 1;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
@@ -134,7 +136,7 @@ placement_skylights_ally_north = [[6000, 11200, 12000],[20000, 11200, 12000],[34
 placement_skylights_ally_south = [[12200, 6400, 12000],[27800, 6400, 12000]];
 
 placement_skylights_ost_flur = [[40400, 8200, 18500],[40400, 12200, 18500],[40400,16200, 18500],[40500, 20200, 18500],[40400, 24500, 18500]];
-placement_skylights_ost_mitte = [[43300, 4500, 19050],[43300, 24600, 19050]];
+placement_skylights_ost_mitte = [[43300, 4500, 19050],[43300, 24600, 19050],[43300, 27000, 19050]];
 
 placement_skylights_nord_flur = [[3500, 43500, 19100],[7000, 43500, 19100],[10500, 43500, 19100],[14000, 43500, 19100],[17500, 43500, 19100],[21000, 43500, 19100],[24500, 43500, 19100],[28000, 43500, 19100],[31500, 43500, 19100]];
 placement_skylights_nord_bad1= [[3500, 47500, 18600]];
