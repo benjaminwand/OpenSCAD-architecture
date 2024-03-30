@@ -1,9 +1,7 @@
 /*
-* Treppen einzeichnen
-    * "$komplexe treppe" variable
-    * modul importrieren
 * Tonnengewölbe nord
 * Tonnengewölbe ost
+* Tonnengewölbe aucgh mit Treppen vereinigen
 * Schnitt
     * Fundament einzeichnen
     * Schnitt(e) in Grundriss einzeichnen
@@ -11,7 +9,7 @@
 * Aussenwand stärken überprüfen
 * alles exportieren
 * Rohbau anlegen
-    * Fahrstuhl
+    * Fahrstuhl Türen
     * Dachluken
     * mode anlegen
 * Wie viele quadratmeter pro person sind das?
@@ -436,14 +434,19 @@ module raeume_innen() {
     if ($staircase) color(color_access) {        // Treppenhaus nord
         difference(){
         translate ([15100, 43500, 0]) cube([4000, 5200, floor_4+storey_height_high]); // Treppenhaus Nord
-        cube([1865, 2845, floor_4+5]); 
+        translate ([16200, 44700, 0])cube([1865, 2845, floor_4+5]); 
         }
         if (og1)                   // Gang zum Hof am treppenhaus nord
             translate ([16000, 38100, h_bodenplatte]) cube([2000, 7600, storey_height_high]);
         };
 
-    if ($elevator) color(color_elevator) translate ([16200, 44700, 0])
-        cube([1865, 2845, floor_4+5]);            // Fahrstuhl nord
+    if ($elevator) color(color_elevator) {           // Fahrstuhl nord
+        translate ([16400, 44900, 0]) cube([1465, 2445, floor_4+storey_height_high]); 
+        translate ([16620, 46800, 0]) tuer_barrierefrei(); 
+        for (i=[floor_1, floor_2, floor_3, floor_4])
+        translate ([16620, 44500, i]) tuer_barrierefrei(); 
+        
+        }
 
     if (og1)                    // Gemeinschaftsräume nordwest
         union(){
@@ -1060,7 +1063,7 @@ module stairs_simple(h, t, b, floor_height = d_floor)
 module stairs() color(color_access){
     // north
     translate ([19100, 43500]) rotate([0, 0, 180]) 
-        stairs_simple(floor_1*0.2, 4000, 1080);
+        stairs_simple(floor_1*0.2, 4000, 1200);
     translate ([15100, 43500, floor_1*0.2]) rotate([0, 0, 90]) 
         stairs_simple(floor_1*0.3, 5200, 1080);
     translate ([15100, 48700, floor_1*0.5]) rotate([0, 0, 0]) 
