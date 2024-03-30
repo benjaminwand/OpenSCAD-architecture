@@ -12,6 +12,8 @@
 * alles exportieren
 * Rohbau anlegen
     * Fahrstuhl
+    * Dachluken
+    * mode anlegen
 * Wie viele quadratmeter pro person sind das?
 * Farben Treppenhausfenster
 * Dachfenster Farben anpassen nach öffentlich und privat
@@ -51,7 +53,7 @@ z_cutheight = 6000;
 x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 1;
+eg = 0;
 og1 = 0;
 og2 = 0;
 og3 = 0;
@@ -152,17 +154,17 @@ diameter_skylight_north = 900;
 
 // flow control
 if (mode==0)                // komplettes Haus
-    haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
+    haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=0);
 else if (mode==1)           // Horizontalschnitt auf Höhe z_cutheight
     projection() {
         intersection(){
             translate([0, 0, z_cutheight * scale]) cube([20000, 20000, 0.1], center=true);
-            haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
+            haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=1);
         };
     }
 else if (mode==2)           // Innenhof
 difference(){
-    haus($doors = 0, $rooms=0, $staircase=0, $windows=0, $elevator=0);
+    haus($doors = 0, $rooms=0, $staircase=0, $windows=0, $elevator=0, $complex_stairs=0);
     scale(scale) difference(){
         union(){
             scale([1, 1, 5]) hausform2500(2500 - e, 0);
@@ -174,7 +176,7 @@ difference(){
 }
 else if (mode==3)           // Ally Haus
 intersection(){
-    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0);
+    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
     scale(scale) difference(){
         scale([1, 1, 5]) hausform2500(2500 - e, 0);
         translate([0, 14500, 0])cube([39400, 1500, 4500]);
@@ -182,7 +184,7 @@ intersection(){
 }
 else if (mode==4)           // Hohes Haus
 intersection(){
-    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0);
+    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
     scale(scale) difference(){
         scale([1, 1, 5]) hausform3000(2500 - e, 0);
         translate([0, 14500, 0])cube([39400, 1500, 4500]);
@@ -191,7 +193,7 @@ intersection(){
 }
 else if (mode==5)           // Haus Ost
 intersection(){
-    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0);
+    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
     scale(scale) difference(){
         scale([1, 1, 10]) rotate([0, 0, 90])translate ([2000, -47000, 0]) cube([26300, 7600, 2100]);
         translate([0, 14500, 0])cube([39400, 1500, 4500]);
@@ -200,7 +202,7 @@ intersection(){
 }
 else if (mode==6)           // Haus Nord und Nordost
 intersection(){
-    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0);
+    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
     scale(scale) difference(){
         scale([1, 1, 10]) hausform3000(2500 - e, 0);
         translate([0, 37000, 0])cube([27000, 1500, 4500]);
@@ -208,18 +210,18 @@ intersection(){
     };
 }
 else if (mode==7)                // komplettes Haus
-    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0);
+    haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
 
 else if (mode==8)
     difference(){
-        haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
+        haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs = 1);
         color(color_cut) translate([-10, 0, 0]) cube([x_cutheight * scale +10, 250, 200], center=false);
     }
 else if (mode==9)
     rotate([0, 0, 90]) projection() {
         intersection(){
             translate([0, 0, -x_cutheight * scale]) cube([2000, 2000, 0.1], center=true);
-            rotate([0, 90, 0]) haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1);
+            rotate([0, 90, 0]) haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=0);
         };
     }
 
@@ -1025,6 +1027,28 @@ module gerader_zaun(length, placememt, angle = 0) rotate([0, 0, angle]) union() 
         translate(placememt + [20, y, 0]) cylinder(railing, 20, 20, $fn=fast_curves?4:30);
     translate (placememt + [0, 0, railing]) cube([40, length, 40], center = false);
 }
+
+module stairs_simple(h, t, b, floor_height = d_floor) 
+    let(
+        anzahl = round(h/180), 
+        stufentiefe = min(300, t/anzahl), 
+        stufenhoehe = h/anzahl,
+        versatz = max(0, t - anzahl*stufentiefe)/2,
+        stufe_unten = [for (i=[0:anzahl]) [i*stufentiefe + versatz,stufenhoehe*i]], 
+        stufe_oben = [for (i=[0:anzahl]) [i*stufentiefe + versatz, stufenhoehe*(i+1)]]
+    ) 
+
+    rotate([90, 0, 0]) linear_extrude(b) 
+        polygon(points = [
+            for (i= [0:(len(stufe_unten) + len(stufe_oben)-2)]) 
+                (i % 2 == 0) ? stufe_unten[i/2] : stufe_oben[i/2],
+            [t,anzahl*stufenhoehe],
+            [t,anzahl*stufenhoehe-floor_height],
+            [t-versatz,anzahl*stufenhoehe-floor_height],
+            [versatz, -floor_height],
+            [0, -floor_height],
+            [0, 0],
+        ]);
 
 module parking()translate([0, 2400, 0]){
     for (i=[500:stangen_x:12000]) translate([i, 0, 0]) one_parking();
