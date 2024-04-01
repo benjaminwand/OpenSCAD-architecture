@@ -45,25 +45,25 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
-e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 0;
-og1 = 0;
+e = 0;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
+eg = 1;
+og1 = 1;
 og2 = 1;
-og3 = 0;
-og4 = 0;
-dach = 0;
+og3 = 1;
+og4 = 1;
+dach = 1;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
-openings_implied = 0;
-fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
-metall = 1;             // Zäunchen
-parking = 1;
+openings_implied = 1;
+fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
+metall = 0;             // Zäunchen
+parking = 0;
 color_index = 0;
-storey_label = 1;
-text = 1;               // Text in Innenräumen
+storey_label = 0;
+text = 0;               // Text in Innenräumen
 line_width = 100;       // for drawing skylights on floor plans
-barrel_vault = 1;
+barrel_vault = 0;
 skylights = 1;
 schnittlinie = 0;
 
@@ -81,7 +81,7 @@ schnittlinie = 0;
 10 raus stehende Innenräume für Screenshots
 11 Stückchen Rohbau
 */
-mode = 11;
+mode = 3;
 
 
 {// Farben
@@ -266,8 +266,8 @@ scale(scale)
             if (dach && skylights) skylights_ost_outside();
             if (dach && skylights) skylights_nord_outside();
         }
-        if (mode!=10) raeume_innen($text=1);
-        if (mode==10) raeume_innen($text=0, $windows=1);
+        if (mode!=10 && mode!=3 && mode!=4) raeume_innen($text=1);
+        if (mode==10 || mode==3 || mode==4) raeume_innen($text=0, $windows=1);
         entrances($entrance_doors=1);
 
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
@@ -424,7 +424,7 @@ module raeume_innen() {
             cube([5200, 2300, 4* storey_height_high + h_bodenplatte+3*d_floor]);
         translate ([0, 0, h_bodenplatte]) linear_extrude(storey_height_high)
             polygon([[41500, 27900], [41500, 26700], [39700, 26700], [37700, 25100],[36900, 26100], [39200, 27900]]);
-        if (og1) translate ([39800, 26700, 3* storey_height_high + h_bodenplatte + 3*d_floor])
+        if (og1 || og4) translate ([39800, 26700, 3* storey_height_high + h_bodenplatte + 3*d_floor])
             cube([1600, 1200, storey_height_high]);
         };
 
@@ -1212,7 +1212,7 @@ module parking()translate([0, 2400, 0]){
 module one_parking() color(color_parking) cube([2500, 5000, 10]);
 module ally_parking() color(color_parking) cube([3500, 5000, 10]);
 
-module room_text(text, size = 1000, placement, height = 5000)
+module room_text(text, size = 1000, placement, height = mode==10?5000:1000)
     color(color_text) linear_extrude(height) translate(placement + [100, 200, 0])
         text(text, size=size);
 
