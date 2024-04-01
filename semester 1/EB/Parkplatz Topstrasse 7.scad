@@ -4,7 +4,7 @@
     * mit Zäunchen
     * dann nochmal screenshot
 * Rohbau anlegen
-    * Treppe einbauen
+    * Treppe einbauen / Loch in der Decke entfernen wie bei Schnitt
     
 * Wie viele quadratmeter pro person sind das?
 * Dachfenster Farben anpassen nach öffentlich und privat
@@ -227,8 +227,11 @@ else if (mode==10)
 else if (mode==11)              // Rohbau
     intersection(){
         difference(){
-            haus($doors = 1, $rooms=0, $staircase=0, $windows=1, $elevator=1, $complex_stairs=1);
-            for (z=[floor_1, floor_2]) scale(scale) inner_ally_vault(z);
+            haus($doors = 1, $rooms=0, $staircase=1, $windows=1, $elevator=1, $complex_stairs=1);
+            scale(scale)difference(){
+                for (z=[floor_1, floor_2]) inner_ally_vault(z);
+                translate ([18000, 2000, 0]) cube([4400, 6000, floor_4]);
+            };
             for (z=[floor_1, floor_2, floor_3, floor_4]) scale(scale) inner_east_vault(z);
             scale(scale) inner_east_public_vault();
         };
@@ -407,7 +410,7 @@ module raeume_innen() {
         };
     if ($elevator && mode!=8 && mode!=9 && (eg || og1 || og2)) 
         color(color_elevator) {                 // Fahrstuhl süd
-            translate ([19267.5, 3667.5, 0]) cube([1465, 2445, floor_4]);
+            translate ([19267.5, 3667.5, 0]) cube([1465, 2445, floor_3-500]);
             translate ([19500, 3200, 0]) tuer_barrierefrei(); 
             for (i=[floor_1, floor_2, floor_3, floor_4])
                 translate ([19500, 5300, i]) tuer_barrierefrei(); 
@@ -1165,7 +1168,7 @@ module stairs() color(color_access){
     translate ([15100, 43500, floor_4-d_floor]) cube([4000, 1200, d_floor]);
     }
     //south
-    if ($rooms && mode!=8 && mode!=9 && (eg || og1 || og2)) {
+    if ($staircase && mode!=8 && mode!=9 && (eg || og1 || og2)) {
     translate ([18000, 7600, 0]) rotate([0, 0, 0]) 
         stairs_simple(floor_1*0.2, 4000, 1300);
     translate ([22000, 7580, floor_1*0.2]) rotate([0, 0, -90]) 
@@ -1186,7 +1189,7 @@ module stairs() color(color_access){
     };
     
     // east
-    if ($rooms && mode!=8 && mode!=9){
+    if ($staircase && mode!=8 && mode!=9){
     translate ([45700, 26750, 0]) rotate([0, 0, 180]) 
         stairs_simple(floor_1*0.3, 4300, 1150);
     translate ([41400, 26750, floor_1*0.3]) rotate([0, 0, 0]) 
