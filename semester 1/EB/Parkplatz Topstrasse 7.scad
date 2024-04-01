@@ -1,11 +1,11 @@
 /*
 * Schnitt
     * Fundament einzeichnen
+    * mit Zäunchen
     * dann nochmal screenshot
 * Rohbau anlegen
-    * Dachluken
-    * innenwände weg nehmen / Tonnengewölbe versetzen
-
+    * Treppe einbauen
+    
 * Wie viele quadratmeter pro person sind das?
 * Dachfenster Farben anpassen nach öffentlich und privat
 * Fensterhöhe überprüfen
@@ -50,12 +50,12 @@ eg = 1;
 og1 = 1;
 og2 = 1;
 og3 = 1;
-og4 = 0;
-dach = 0;
+og4 = 1;
+dach = 1;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
-openings_implied = 1;
+openings_implied = 0;
 fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
 metall = 0;             // Zäunchen
 parking = 0;
@@ -81,7 +81,7 @@ schnittlinie = 0;
 10 raus stehende Innenräume für Screenshots
 11 Stückchen Rohbau
 */
-mode = 6;
+mode = 11;
 
 
 {// Farben
@@ -199,7 +199,7 @@ intersection(){
 else if (mode==6)           // Haus Nord und Nordost
 intersection(){
     haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
-  #  scale(scale) difference(){
+    scale(scale) difference(){
         scale([1, 1, 10]) hausform3000(2500 - e, 0);
         translate([0, 37000, 0])cube([27000, 1500, 4500]);
         rotate([0, 0, 90])translate ([2000, -47000, 0]) cube([26300, 7600, 21000]);
@@ -224,8 +224,16 @@ else if (mode==9)
     }
 else if (mode==10)
     haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=1);
-else if (mode==11)
-    haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs=1);
+else if (mode==11)              // Rohbau
+    intersection(){
+        difference(){
+            haus($doors = 1, $rooms=0, $staircase=0, $windows=1, $elevator=1, $complex_stairs=1);
+            for (z=[floor_1, floor_2]) scale(scale) inner_ally_vault(z);
+            for (z=[floor_1, floor_2, floor_3, floor_4]) scale(scale) inner_east_vault(z);
+            scale(scale) inner_east_public_vault();
+        };
+        translate([100, 0, -10])cube([150, 112, 200]);
+    }
 
 module haus($elevator)
 //rotate([0, 0, -rot])
@@ -262,17 +270,18 @@ scale(scale)
                 if (dach) dachform_nord(h_bodenplatte + 3*storey_height_high+ 2* d_floor);
             };
             if (og1) parking_barrel_vaults();
-            if (og2 && og3 && ally && skylights) skylights_ally_outside();
-            if (dach && skylights) skylights_ost_outside();
-            if (dach && skylights) skylights_nord_outside();
+            if (og2 && og3 && ally && skylights && mode!=11) skylights_ally_outside();
+            if (dach && skylights && mode!=11) skylights_ost_outside();
+            if (dach && skylights && mode!=11) skylights_nord_outside();
         }
-        if (mode!=10 && mode!=3 && mode!=4 && mode!=5 && mode!=6 && mode!=7) 
+        if (text && mode!=10 && mode!=3 && mode!=4 && mode!=5 && mode!=6 && mode!=7 && mode!=11) 
             raeume_innen($text=1);
-        if (mode==10 || mode==3 || mode==4 || mode==5 || mode==6 || mode==7) 
+        if (mode==10 || mode==3 || mode==4 || mode==5 || mode==6 || mode==7 || mode==11) 
             raeume_innen($text=0, $windows=1);
         entrances($entrance_doors=1);
 
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
+        if (skylights && mode==11) skylight_holes();
     }
     if (og2 && !og3 && (mode==0 || mode==10) && skylights)
         skylight_in_floor_plan(diameter_skylight_south, concat(placement_skylights_ally_middle, placement_skylights_ally_north, placement_skylights_ally_south));
@@ -331,28 +340,28 @@ module tuer_klein()
 {       // Fenster Module
 module opening_south_ally(x, z, x_pos, y_pos, z_pos)
     if (openings_implied)
-        translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
+        translate([x_pos, y_pos, z_pos]) cube([x, mode==11?1000:300, z]);
     else {
-        translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
-        translate([x_pos, y_pos + 400, z_pos]) cube([x, 300, z]);
+        translate([x_pos, y_pos, z_pos]) cube([x, mode==11?1000:300, z]);
+        translate([x_pos, y_pos + 400, z_pos]) cube([x, mode==11?1000:300, z]);
     };
 
 module opening_west_ally(y, z, x_pos, y_pos, z_pos)
     if (openings_implied)
-        translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
+        translate([x_pos, y_pos, z_pos]) cube([mode==11?1000:300, y, z]);
     else {
-        translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
-        translate([x_pos + 400, y_pos, z_pos]) cube([300, y, z]);
+        translate([x_pos, y_pos, z_pos]) cube([mode==11?1000:300, y, z]);
+        translate([x_pos + 400, y_pos, z_pos]) cube([mode==11?1000:300, y, z]);
     };
 
 module opening_3000(breite, hoehe, x_pos, y_pos, z_pos, z_rot = 0)
     translate([x_pos, y_pos, z_pos]) rotate([0, 0, z_rot])
     if (openings_implied)
-        cube([breite, 300, doorshigh?3000:hoehe]);
+        cube([breite, mode==11?1000:300, doorshigh?3000:hoehe]);
     else
         union() {
-            cube([breite, 300, doorshigh?3000:hoehe]);
-            translate([0, 400, 0]) cube([breite, 300, doorshigh?3000:hoehe]);
+            cube([breite, mode==11?1000:300, doorshigh?3000:hoehe]);
+            translate([0, 400, 0]) cube([breite, mode==11?1000:300, doorshigh?3000:hoehe]);
         };
 
     // Eingänge
@@ -786,8 +795,8 @@ module we_09(h) translate ([0,0, h]){
     }
 };
 
-module we_08_paare(h) if ($rooms && mode!=8 && mode!=9)translate([0, 0, h]){
-    color(color_private) intersection(){
+module we_08_paare(h) if (mode!=8 && mode!=9)translate([0, 0, h]){
+    if ($rooms) color(color_private) intersection(){
     union(){
         translate ([400, 40200, 0]) cube([4500, 6400, storey_height_high]);       // Küche
         translate ([400, 46800, 0]) cube([4500, 1900, storey_height_high]);       // Bad
@@ -1002,8 +1011,8 @@ union(){
 }
 
 module inner_ally_vault(h){
-    translate ([400, 1900, h]) cube([39000, 12800, 2000]);
-    translate([400, 8300, h + 2000])
+    translate ([400, 2400, h]) cube([39000, 12800, 2000]);
+    translate([400, 8800, h + 2000])
         resize([39000, 12800, storey_height_ally*2- 2000*2])
             rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:30);
 };
@@ -1017,8 +1026,8 @@ rotate([0, 0, 90]) union(){
 }};
 module inner_east_public_vault(){
 rotate([0, 0, 90]) union(){
-  #  translate ([2400, -46600, 0]) cube([25500, mode==11?6800:8800, 2400]);
-   # translate([2400, -43200, 2400])
+    translate ([2400, -46600, 0]) cube([25500, mode==11?6800:8800, 3500]);
+    translate([2400, -43200, 3500])
         resize([25500, 6800, storey_height_ally*2- 2000*2])
             rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:50);
 }};
@@ -1062,6 +1071,20 @@ difference(){
     cylinder(5, diameter/2, diameter/2, true, $fn=fast_curves?10:30);
     cylinder(10, diameter/2-line_width, diameter/2-line_width, true, $fn=fast_curves?10:30);
 }
+
+module skylight_holes()
+{
+    for(i=placement_skylights_ally_middle) translate(i) 
+        cylinder(1000, diameter_skylight_south/2, diameter_skylight_south/2, center=true);
+    for(i=placement_skylights_ally_north) translate(i) 
+        rotate([-5, 0, 0]) cylinder(1000, diameter_skylight_south/2, diameter_skylight_south/2, center=true);
+    for(i=placement_skylights_ally_south) translate(i) 
+        rotate([5, 0, 0]) cylinder(1000, diameter_skylight_south/2, diameter_skylight_south/2, center=true);
+    for(i=placement_skylights_ost_flur) translate(i) rotate([0, -25, 0]) 
+        cylinder(1000, diameter_skylight_east/2, diameter_skylight_east/2, center=true);
+    for(i=placement_skylights_ost_mitte) translate(i) 
+        cylinder(1000, diameter_skylight_east/2, diameter_skylight_east/2, center=true);
+};
 
 module metall() color(color_metal){
     if (eg || og1) for (i=tree_placement) translate(i) baumzaun();
