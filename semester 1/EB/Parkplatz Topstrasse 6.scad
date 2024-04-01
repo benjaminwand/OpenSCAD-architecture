@@ -61,7 +61,7 @@ og4 = 1;
 dach = 1;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
-walls = 0;
+walls = 1;
 openings_implied = 0;
 fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
 metall = 0;             // Zäunchen
@@ -85,7 +85,7 @@ skylights = 0;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 */
-mode = 0;
+mode = 8;
 
 
 {// Farben
@@ -233,7 +233,7 @@ scale(scale)
     if (grundstueck) grundstueck();
     difference(){
         union(){
-        //    if (og1) grundplatte(d_bodenplatte);
+            if (og1) grundplatte(d_bodenplatte);
             if (eg) for (x=[0:stangen_x:35000], y=stangen_y_neu)
                 translate([x, y]) bodensaeule();
             eg_aussen();
@@ -242,12 +242,13 @@ scale(scale)
                 if (og2) hausform3000(og3?d_floor + storey_height_high - e:1100, floor_2);
                 if (og3) hausform3000(og4?d_floor + storey_height_high - e:1000, floor_3);
                 if (og4) union(){
-                    color(color_yard) hausform3000(d_floor -e, floor_4 - d_floor);
+                    color(color_yard) translate([35400, 31500, floor_4-d_floor/2]) 
+                        rotate([0, 0, 40]) cube([5700, 25000, d_floor], center=true); // 40° Referenz
                     color(color_walls) {
                         rotate([0, 0, 90]) translate ([2000, -47000, floor_4]) 
-                            cube([26300, 7600, /*dach?d_floor:*/1500]);
+                            cube([26300, 7600, 1500]);
                         translate ([0, 37700, floor_4]) 
-                            cube([33500, 11400, /*dach?d_floor:*/1500]);
+                            cube([33500, 11400, 1500]);
                     };
                 };
 
@@ -263,7 +264,7 @@ scale(scale)
             if (dach && skylights) skylights_ost_outside();
             if (dach && skylights) skylights_nord_outside();
         }
-    #    raeume_innen($text=0);
+        raeume_innen($text=0);
         entrances($entrance_doors=1);
 
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
@@ -278,7 +279,6 @@ scale(scale)
     if ($complex_stairs) stairs();
     if (metall) metall();
     if (parking && eg) parking();
-  //  translate([35400, 31500, 6000]) rotate([0, 0, 40]) cube([5700, 25000,18000], center=true);
 
 };
 
