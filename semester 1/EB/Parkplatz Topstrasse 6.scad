@@ -1,4 +1,5 @@
 /*
+* coolere Fenster am Treppenhaus
 * Tonnengewölbe nord
 * Tonnengewölbe ost
 * Tonnengewölbe auch mit Treppen vereinigen
@@ -262,7 +263,7 @@ scale(scale)
             if (dach && skylights) skylights_ost_outside();
             if (dach && skylights) skylights_nord_outside();
         }
-        raeume_innen($text=0);
+    #    raeume_innen($text=0);
         entrances($entrance_doors=1);
 
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
@@ -777,7 +778,8 @@ module we_09(h) translate ([0,0, h]){
 };
 
 module we_08_paare(h) translate([0, 0, h]){
-    if ($rooms) color(color_private) {
+    if ($rooms) color(color_private) intersection(){
+    union(){
         translate ([400, 40200, 0]) cube([4500, 6400, storey_height_high]);       // Küche
         translate ([400, 46800, 0]) cube([4500, 1900, storey_height_high]);       // Bad
         translate ([400, 38100, 0]) cube([4500, 1900, storey_height_high]);       // Bad
@@ -789,6 +791,8 @@ module we_08_paare(h) translate([0, 0, h]){
         {translate ([10100, 44200, 0]) cube([3500, 4500, storey_height_high]);
         translate ([10100, 44600, 0]) cube([4800, 4100, storey_height_high]);}
         translate ([5100, 44200, 0]) cube([4800, 4500, storey_height_high]);
+    }
+    if (barrel_vault) inner_north_vault(0);
     }
 
     if($doors) color(color_private) {
@@ -995,8 +999,8 @@ module inner_ally_vault(h){
 module inner_east_vault(h){
 rotate([0, 0, 90]) union(){
     translate ([2000, -46600, h]) cube([26300, 8800, 2000]);
-    translate([2000-e, -43350, h + 2000])
-        resize([26300+2*e, 6500, storey_height_ally*2- 2000*2])
+    translate([2000-e, -43200, h + 2000])
+        resize([26300+2*e, 6800, storey_height_ally*2- 2000*2])
             rotate([0, 90, 0]) cylinder(1, 1, 1, false, $fn=fast_curves?10:50);
 }};
 
