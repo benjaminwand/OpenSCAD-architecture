@@ -53,24 +53,24 @@ z_cutheight = 6000;
 x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
 e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 1;
-og1 = 1;
+eg = 0;
+og1 = 0;
 og2 = 1;
-og3 = 1;
-og4 = 1;
-dach = 1;
+og3 = 0;
+og4 = 0;
+dach = 0;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
 openings_implied = 0;
-fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
+fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
 metall = 0;             // Zäunchen
 parking = 1;
 color_index = 0;
 storey_label = 0;
 text = 0;               // Text in Innenräumen
 line_width = 100;       // for drawing skylights on floor plans
-barrel_vault = 1;
+barrel_vault = 0;
 skylights = 0;
 
 /*
@@ -91,7 +91,7 @@ mode = 8;
 {// Farben
 color_walls = "black";
 color_yard = "lightgrey";
-color_pillars = "black";
+color_pillars = "darkgrey";
 color_arches = "grey";
 color_access = "cyan";
 color_elevator = "DeepSkyBlue";
@@ -215,7 +215,9 @@ else if (mode==7)                // komplettes Haus
 else if (mode==8)
     difference(){
         haus($doors = 1, $rooms=1, $staircase=1, $windows=1, $elevator=1, $complex_stairs = 1);
-        color(color_cut) translate([-10, 0, 0]) cube([x_cutheight * scale +10, 250, 200], center=false);
+        color(color_cut) 
+        {translate([-10, 0, -10]) cube([x_cutheight * scale +10, 250, 200], center=false);
+        translate([0, 0, -100]) cube([400, 250, 100], center=false);}
     }
 else if (mode==9)
     rotate([0, 0, 90]) projection() {
@@ -330,13 +332,7 @@ module opening_south_ally(x, z, x_pos, y_pos, z_pos)
         translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
         translate([x_pos, y_pos + 400, z_pos]) cube([x, 300, z]);
     };
-/*module opening_south_3000(x, z, x_pos, y_pos, z_pos)
-    if (openings_implied)
-        translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
-    else {
-        translate([x_pos, y_pos, z_pos]) cube([x, 300, z]);
-        translate([x_pos, y_pos + 400, z_pos]) cube([x, 300, z]);
-    };*/
+
 module opening_west_ally(y, z, x_pos, y_pos, z_pos)
     if (openings_implied)
         translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
@@ -344,13 +340,6 @@ module opening_west_ally(y, z, x_pos, y_pos, z_pos)
         translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
         translate([x_pos + 400, y_pos, z_pos]) cube([300, y, z]);
     };
-/*module opening_west_3000(y, z, x_pos, y_pos, z_pos)
-    if (openings_implied)
-        translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
-    else {
-        translate([x_pos, y_pos, z_pos]) cube([300, y, z]);
-        translate([x_pos + 400, y_pos, z_pos]) cube([300, y, z]);
-    };*/
 
 module opening_3000(breite, hoehe, x_pos, y_pos, z_pos, z_rot = 0)
     translate([x_pos, y_pos, z_pos]) rotate([0, 0, z_rot])
@@ -439,20 +428,26 @@ module raeume_innen() {
         for (z = [h_bodenplatte - 300, h_bodenplatte - 300 +storey_height_high, h_bodenplatte - 300 + 2*storey_height_high, h_bodenplatte - 300 + 3*storey_height_high])
             opening_3000(1200, 1500, 47150, 26200, z, 90);
 
-    if ($staircase) color(color_access) {        // Treppenhaus nord
-        difference(){
-        translate ([15100, 43500, 0]) cube([4000, 5200, floor_4+storey_height_high]); // Treppenhaus Nord
-        translate ([16200, 44700, 0])cube([1865, 2845, floor_4+5+storey_height_high]); 
+    if ($staircase)  {        // Treppenhaus nord
+        intersection(){
+            difference(){
+            color(color_access) // Treppenhaus Nord
+                translate ([15100, 43500, 0]) cube([4000, 5200, floor_4+storey_height_high]); 
+            color(color_elevator) // Fahrstuhl ausschneiden
+                translate ([16200, 44700, 0])cube([1865, 2845, floor_4+5+storey_height_high]); 
+            };
+            if (barrel_vault) 
+                hull(){inner_north_vault(0);inner_north_vault(floor_4);};
         }
-        if (og1)                   // Gang zum Hof am treppenhaus nord
+        if (og1) color(color_access)        // Gang zum Hof am treppenhaus nord
             intersection(){
-                translate ([16000, 38100, h_bodenplatte]) cube([2000, 7600, storey_height_high]);
+                translate ([16000, 38100, h_bodenplatte]) cube([2000, 6000, storey_height_high]);
                 if (barrel_vault) inner_north_vault(h_bodenplatte);
             };
         };
 
     if ($elevator) color(color_elevator) {           // Fahrstuhl nord
-        translate ([16400, 44900, 0]) cube([1465, 2445, floor_4+storey_height_high]); 
+        translate ([16400, 44900, 0]) cube([1465, 2445, floor_4+2500]); 
         translate ([16620, 46800, 0]) tuer_barrierefrei(); 
         for (i=[floor_1, floor_2, floor_3, floor_4])
             translate ([16620, 44500, i]) tuer_barrierefrei(); 
@@ -763,7 +758,7 @@ module opening_ost_hof_1(z) if($windows) color(color_private) {
 module we_06(h) translate ([0,0, h]){
     we_05(0);
     if (mode!=8 && mode!=9){
-       # if ($rooms) color(color_private)  // Zimmer Nord
+        if ($rooms) color(color_private)  // Zimmer Nord
             linear_extrude(3000) polygon([[41200, 26700],[41200, 28100],[41400, 28100],[38000, 32100], [34350, 29000], [37650, 25100], [39700, 26700]]);
 
         if ($doors) color(color_private) translate ([40000, 26300, 0]) tuer_innen();
@@ -777,7 +772,7 @@ module we_09(h) translate ([0,0, h]){
     }
 };
 
-module we_08_paare(h) translate([0, 0, h]){
+module we_08_paare(h) if ($rooms && mode!=8 && mode!=9)translate([0, 0, h]){
     if ($rooms) color(color_private) intersection(){
     union(){
         translate ([400, 40200, 0]) cube([4500, 6400, storey_height_high]);       // Küche
@@ -840,7 +835,10 @@ module family(h) {
         translate ([19300, 42700, h]) cube([900,1900, storey_height_high]);
         translate ([18200, 42400, h]) cube([2000,900, storey_height_high]);
 
-        translate ([15100, 38100, h]) cube([2900, 5200, storey_height_high]);     // Kinderzimmer
+        intersection(){
+            translate ([15100, 38100, h]) cube([2900, 5200, storey_height_high]);     // Kinderzimmer
+            if (barrel_vault) inner_north_vault(h);
+        }
         if (mode!=8 && mode!=9)
         {translate ([18200, 38100, h]) cube([3000, 4100, storey_height_high]);
         translate ([20400, 38100, h]) cube([1500, 4800, storey_height_high]);
@@ -1087,6 +1085,7 @@ module stairs_simple(h, t, b, floor_height = d_floor)
     
 module stairs() color(color_access){
     // north
+    {
     translate ([19100, 43500]) rotate([0, 0, 180]) 
         stairs_simple(floor_1*0.2, 4000, 1200);
     translate ([15100, 43500, floor_1*0.2]) rotate([0, 0, 90]) 
@@ -1120,8 +1119,9 @@ module stairs() color(color_access){
     translate ([19100, 48700, floor_3 +storey_height_high*0.6]) rotate([0, 0, -90]) 
         stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([15100, 43500, floor_4-d_floor]) cube([4000, 1200, d_floor]);
-
+    }
     //south
+    if ($rooms && mode!=8 && mode!=9) {
     translate ([18000, 7600, 0]) rotate([0, 0, 0]) 
         stairs_simple(floor_1*0.2, 4000, 1300);
     translate ([22000, 7580, floor_1*0.2]) rotate([0, 0, -90]) 
@@ -1139,8 +1139,10 @@ module stairs() color(color_access){
     translate ([18000, 2400, floor_1 +storey_height_high*0.6]) rotate([0, 0, 90]) 
         stairs_simple(storey_height_high*0.4+d_floor, 5200, 1070);
     translate ([18000, 6300, floor_2-d_floor]) cube([4000, 1300, d_floor]);
+    };
     
     // east
+    if ($rooms && mode!=8 && mode!=9){
     translate ([45700, 26750, 0]) rotate([0, 0, 180]) 
         stairs_simple(floor_1*0.3, 4300, 1150);
     translate ([41400, 26750, floor_1*0.3]) rotate([0, 0, 0]) 
@@ -1163,6 +1165,7 @@ module stairs() color(color_access){
     translate ([46600, 26750, floor_3 +storey_height_high*0.5]) rotate([0, 0, 180]) 
         stairs_simple(storey_height_high*0.5+d_floor, 5200, 1150);
     translate ([41400, 25600, floor_4-d_floor]) cube([1150, 2300, d_floor]);
+    }
     }
 
 module parking()translate([0, 2400, 0]){
