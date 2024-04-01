@@ -50,8 +50,8 @@ eg = 1;
 og1 = 1;
 og2 = 1;
 og3 = 1;
-og4 = 1;
-dach = 1;
+og4 = 0;
+dach = 0;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
@@ -81,7 +81,7 @@ schnittlinie = 0;
 10 raus stehende Innenräume für Screenshots
 11 Stückchen Rohbau
 */
-mode = 3;
+mode = 6;
 
 
 {// Farben
@@ -199,10 +199,10 @@ intersection(){
 else if (mode==6)           // Haus Nord und Nordost
 intersection(){
     haus($doors = 0, $rooms=0, $staircase=0, $windows=1, $elevator=0, $complex_stairs=0);
-    scale(scale) difference(){
+  #  scale(scale) difference(){
         scale([1, 1, 10]) hausform3000(2500 - e, 0);
         translate([0, 37000, 0])cube([27000, 1500, 4500]);
-        scale([1, 1, 10]) rotate([0, 0, 90])translate ([2000, -47000, 0]) cube([26300, 7600, 2100]);
+        rotate([0, 0, 90])translate ([2000, -47000, 0]) cube([26300, 7600, 21000]);
     };
 }
 else if (mode==7)                // komplettes Haus
@@ -266,8 +266,10 @@ scale(scale)
             if (dach && skylights) skylights_ost_outside();
             if (dach && skylights) skylights_nord_outside();
         }
-        if (mode!=10 && mode!=3 && mode!=4) raeume_innen($text=1);
-        if (mode==10 || mode==3 || mode==4) raeume_innen($text=0, $windows=1);
+        if (mode!=10 && mode!=3 && mode!=4 && mode!=5 && mode!=6 && mode!=7) 
+            raeume_innen($text=1);
+        if (mode==10 || mode==3 || mode==4 || mode==5 || mode==6 || mode==7) 
+            raeume_innen($text=0, $windows=1);
         entrances($entrance_doors=1);
 
         for (i=tree_placement) translate(i) cylinder(3 * h_bodenplatte, 1000, 1000, center = true, $fn=fast_curves?10:30);
@@ -785,7 +787,7 @@ module we_09(h) translate ([0,0, h]){
 };
 
 module we_08_paare(h) if ($rooms && mode!=8 && mode!=9)translate([0, 0, h]){
-    if ($rooms) color(color_private) intersection(){
+    color(color_private) intersection(){
     union(){
         translate ([400, 40200, 0]) cube([4500, 6400, storey_height_high]);       // Küche
         translate ([400, 46800, 0]) cube([4500, 1900, storey_height_high]);       // Bad
@@ -827,7 +829,7 @@ module we_08_paare(h) if ($rooms && mode!=8 && mode!=9)translate([0, 0, h]){
     }
 
     if ($text) color(color_text) {
-       room_text("Bad", size = 700, placement=[400, 38100, mode==10?50000:0]);
+       room_text("Bad", size = 700, placement=[400, 38100, 0]);
        room_text("Küche", size = 700, placement=[400, 40300, 0]);
        room_text("Bad", size = 700, placement=[400, 47000, 0]);
     }
