@@ -235,7 +235,7 @@ else if (mode==11)              // Rohbau
             for (z=[floor_1, floor_2, floor_3, floor_4]) scale(scale) inner_east_vault(z);
             scale(scale) inner_east_public_vault();
         };
-        translate([100, 0, -10])cube([150, 112, 200]);
+        translate([100, 0, -10])cube([150, 112, 200]); // Größe Teilmodell
     }
 
 module haus($elevator)
@@ -400,8 +400,14 @@ module raeume_innen() {
     if ($staircase && mode!=8 && mode!=9 && (eg || og1 || og2))
         color(color_access) {       // Treppenhaus süd + Probenraum
             difference(){
-            translate ([18000, 2400, 0]) cube([4000, 5200, floor_4]); // Treppenhaus süd
-            translate ([19067.5, 3467.5, 0]) cube([1865, 2845, floor_4+10]);
+                intersection(){           // Treppenhaus süd
+                        translate ([18000, 2400, 0]) cube([4000, 5200, floor_4]);
+                    if (mode==11) hull(){
+                        translate ([18000, 2400, 0]) cube([4000, 5200, 1]);
+                        inner_ally_vault(floor_2);
+                    };
+                };
+                translate ([19067.5, 3467.5, 0]) cube([1865, 2845, floor_4]);
             };
             if (og1)        // Gang zum Hof am treppenhaus süd
                 translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); 
@@ -410,9 +416,15 @@ module raeume_innen() {
         };
     if ($elevator && mode!=8 && mode!=9 && (eg || og1 || og2)) 
         color(color_elevator) {                 // Fahrstuhl süd
-            translate ([19267.5, 3667.5, 0]) cube([1465, 2445, floor_3-500]);
+            intersection(){
+                translate ([19267.5, 3667.5, 0]) cube([1465, 2445, floor_3]);
+                if (mode==11) hull(){
+                    translate ([19267.5, 3667.5, 0]) cube([1465, 2445, 1]);
+                    inner_ally_vault(floor_2);
+                };
+            };
             translate ([19500, 3200, 0]) tuer_barrierefrei(); 
-            for (i=[floor_1, floor_2, floor_3, floor_4])
+            for (i=[floor_1, floor_2])
                 translate ([19500, 5300, i]) tuer_barrierefrei(); 
         }
 
