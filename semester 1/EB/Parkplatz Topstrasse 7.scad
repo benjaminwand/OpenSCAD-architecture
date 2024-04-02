@@ -3,8 +3,6 @@
     * Fundament einzeichnen
     * mit Zäunchen
     * dann nochmal screenshot
-* Rohbau anlegen
-    * Treppe einbauen / Loch in der Decke entfernen wie bei Schnitt
     
 * Wie viele quadratmeter pro person sind das?
 * Dachfenster Farben anpassen nach öffentlich und privat
@@ -79,9 +77,9 @@ schnittlinie = 0;
 8 Haus in Nord-Süd-Richtung durchgeschnitten mit Innenräumen
 9 Schnitt in Nord-Süd-Richtung, Projektion
 10 raus stehende Innenräume für Screenshots
-11 Stückchen Rohbau
+11 ein Stückchen Rohbau
 */
-mode = 11;
+mode = 8;
 
 
 {// Farben
@@ -235,7 +233,7 @@ else if (mode==11)              // Rohbau
             for (z=[floor_1, floor_2, floor_3, floor_4]) scale(scale) inner_east_vault(z);
             scale(scale) inner_east_public_vault();
         };
-        translate([100, 0, -10])cube([150, 112, 200]); // Größe Teilmodell
+        translate([98, 0, -10])cube([150, 112, 200]); // Größe Teilmodell
     }
 
 module haus($elevator)
@@ -277,7 +275,7 @@ scale(scale)
             if (dach && skylights && mode!=11) skylights_ost_outside();
             if (dach && skylights && mode!=11) skylights_nord_outside();
         }
-        if (text && mode!=10 && mode!=3 && mode!=4 && mode!=5 && mode!=6 && mode!=7 && mode!=11) 
+        if (mode!=10 && mode!=3 && mode!=4 && mode!=5 && mode!=6 && mode!=7 && mode!=11) 
             raeume_innen($text=1);
         if (mode==10 || mode==3 || mode==4 || mode==5 || mode==6 || mode==7 || mode==11) 
             raeume_innen($text=0, $windows=1);
@@ -410,7 +408,10 @@ module raeume_innen() {
                 translate ([19067.5, 3467.5, 0]) cube([1865, 2845, floor_4]);
             };
             if (og1)        // Gang zum Hof am treppenhaus süd
-                translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); 
+                intersection(){
+                    translate ([19000, 7600, h_bodenplatte]) cube([2000, 7600, storey_height_ally]); 
+                if (barrel_vault || mode==11) inner_ally_vault(floor_1);
+                };
             if (og2) // Treppenhaus Süd
                 translate ([19000, 7600, floor_2]) cube([2000, 2000, storey_height_ally]); 
         };
@@ -425,7 +426,7 @@ module raeume_innen() {
             };
             translate ([19500, 3200, 0]) tuer_barrierefrei(); 
             for (i=[floor_1, floor_2])
-                translate ([19500, 5300, i]) tuer_barrierefrei(); 
+                translate ([19500, 5350, i]) tuer_barrierefrei(); 
         }
 
     if ($windows && mode!=8 && mode!=9) color(color_access)
@@ -1253,7 +1254,7 @@ module one_parking() color(color_parking) cube([2500, 5000, 10]);
 module ally_parking() color(color_parking) cube([3500, 5000, 10]);
 
 module room_text(text, size = 1000, placement, height = mode==10?5000:1000)
-    color(color_text) linear_extrude(height) translate(placement + [100, 200, 0])
+    if (text) color(color_text) linear_extrude(height) translate(placement + [100, 200, 0])
         text(text, size=size);
 
 module barrel_vault(height_middle, height_side, width, length, distances)
