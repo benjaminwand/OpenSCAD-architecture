@@ -52,27 +52,28 @@ rot = -16.39;           // Grundstück nach Norden ausrichten und zurück
 z_cutheight = 6000;
 x_cutheight = 15500;
 doorshigh = 0;          // einfacher zeichnen mit ober raus stehenden tueren
-e = 5;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
-eg = 0;
-og1 = 0;
-og2 = 0;
-og3 = 0;
+e = 0;                  // epsilon-wert, nummerisch in mm, zum Rendern 0 machen
+eg = 1;
+og1 = 1;
+og2 = 1;
+og3 = 1;
 og4 = 1;
-dach = 0;
+dach = 1;
 ally = 1;
 grundstueck = 0;        // Grundstücksgrenzen anzeigen
 walls = 1;
-openings_implied = 0;
-fast_curves = 0;        // macht Vorschau schneller, zum Rendern 0 machen
-metall = 1;             // Zäunchen
-parking = 1;
+openings_implied = 1;
+fast_curves = 1;        // macht Vorschau schneller, zum Rendern 0 machen
+many_rods = 0;
+metall = 0;             // Zäunchen
+parking = 0;
 color_index = 0;
-storey_label = 1;
-text = 1;               // Text in Innenräumen
+storey_label = 0;
+text = 0;               // Text in Innenräumen
 line_width = 100;       // for drawing skylights on floor plans
-barrel_vault = 0;
+barrel_vault = 1;
 skylights = 1;
-schnittlinie = 1;
+schnittlinie = 0;
 
 /*
 0 komplettes Haus                   mit Innenräumen
@@ -87,7 +88,7 @@ schnittlinie = 1;
 9 Schnitt in Nord-Süd-Richtung, Projektion
 10 raus stehende Innenräume für Screenshots
 */
-mode = 10;
+mode = 6;
 
 
 {// Farben
@@ -455,14 +456,14 @@ module raeume_innen() {
                 translate ([16000, 38100, h_bodenplatte]) cube([2000, 6000, storey_height_high]);
                 if (barrel_vault) inner_north_vault(h_bodenplatte);
             };
-            
-                // Treppenhaus fenster nach Norden
-            if($windows) color(color_access)
-                for (z = [ floor_1, floor_2, floor_3, floor_4]) {
-                    opening_3000(1200, 1500, 16600, 49250, z-storey_height_high+2000, 180);
-                    opening_3000(1200, 1500, 18800, 49250, z-storey_height_high+2600, 180);
-                }
         };
+            
+        // Treppenhaus fenster nach Norden
+    if($windows) color(color_access)
+        for (z = [ floor_1, floor_2, floor_3, floor_4]) {
+            opening_3000(1200, 1500, 16600, 49250, z-storey_height_high+2000, 180);
+            opening_3000(1200, 1500, 18800, 49250, z-storey_height_high+2600, 180);
+        }
 
     if ($elevator) color(color_elevator) {           // Fahrstuhl nord
         translate ([16400, 44900, 0]) cube([1465, 2445, floor_4+2500]); 
@@ -567,7 +568,7 @@ module raeume_innen() {
             }
         };
 
-            if ($text) translate([0, 0, h_bodenplatte]) {
+            if ($text && mode!=8 && mode!=9) translate([0, 0, h_bodenplatte]) {
                room_text("Spiele/Spielen", size = 700, placement=[18200, 38100, 0]);
                room_text("Coworking", size = 700, placement=[29900, 34800, 0]);
                room_text("Teeküche", size = 700, placement=[28500, 41000, 0]);
@@ -790,7 +791,7 @@ module we_09(h) translate ([0,0, h]){
     }
 };
 
-module we_08_paare(h) if ($rooms && mode!=8 && mode!=9)translate([0, 0, h]){
+module we_08_paare(h) if (mode!=8 && mode!=9) translate([0, 0, h]){
     if ($rooms) color(color_private) intersection(){
     union(){
         translate ([400, 40200, 0]) cube([4500, 6400, storey_height_high]);       // Küche
@@ -1068,13 +1069,13 @@ module metall() color(color_metal){
 }
 
 module baumzaun()
-    for (i= [1:6:360]) rotate([0, 0, i]) union(){
-    translate ([1000, 0, h_bodenplatte + railing]) cube([40, 120, 40], center = true);
-    translate ([1000, 10]) cylinder(h_bodenplatte + railing, 20, 20, $fn=fast_curves?4:30);
+    for (i= [1:(many_rods?6:20):360]) rotate([0, 0, i]) union(){
+    translate ([1050, 0, h_bodenplatte + railing]) cube([40, many_rods?120:375, 40], center = true);
+    translate ([1050, 10]) cylinder(h_bodenplatte + railing, 20, 20, $fn=fast_curves?4:30);
 }
 
 module gerader_zaun(length, placememt, angle = 0) rotate([0, 0, angle]) union() {
-    for (y = [0 : 120 : length])
+    for (y = [0 : many_rods?120:300 : length])
         translate(placememt + [20, y, 0]) cylinder(railing, 20, 20, $fn=fast_curves?4:30);
     translate (placememt + [0, 0, railing]) cube([40, length, 40], center = false);
 }
@@ -1212,7 +1213,7 @@ module one_parking() color(color_parking) cube([2500, 5000, 10]);
 module ally_parking() color(color_parking) cube([3500, 5000, 10]);
 
 module room_text(text, size = 1000, placement, height = 5000)
-    color(color_text) linear_extrude(height) translate(placement + [100, 200, 0])
+    if (text && mode!=8 && mode!=9 && mode!=6) color(color_text) linear_extrude(height) translate(placement + [100, 200, 0])
         text(text, size=size);
 
 module barrel_vault(height_middle, height_side, width, length, distances)
