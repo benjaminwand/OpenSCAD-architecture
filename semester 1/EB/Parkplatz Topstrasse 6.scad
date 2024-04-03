@@ -1,19 +1,8 @@
 /*
-* coolere Fenster am Treppenhaus
-* Tonnengewölbe nord
-* Tonnengewölbe ost
-* Tonnengewölbe auch mit Treppen vereinigen
 * Schnitt
     * Fundament einzeichnen
-    * Schnitt(e) in Grundriss einzeichnen
-* Rohbau anlegen
-    * mode anlegen
-    * Dachluken
-    * innenwände weg nehmen
-* alle screenshots machen 
 
 * Wie viele quadratmeter pro person sind das?
-* Farben Treppenhausfenster
 * Dachfenster Farben anpassen nach öffentlich und privat
 * Fensterhöhe überprüfen
 * Aussenwand stärken überprüfen
